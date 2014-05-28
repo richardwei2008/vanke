@@ -1,22 +1,25 @@
 ﻿	function init() {
+		var normalizedWidth = 640;
+		var normalizedHeight = 960;
+		
 		var c = getId('canvas');
 		c.width = window.innerWidth;
 		c.height = window.innerHeight;
 		var ctx = c.getContext("2d");
 		var fcanvas = new fabric.Canvas('canvas');
-		var ratio = fcanvas.height * 1.0 / fcanvas.width;
-
+		var aspectRatio = fcanvas.height * 1.0 / fcanvas.width;
+		
+		var globalRatio = fcanvas.width * 1.0 / normalizedWidth;
+		
+		var slideElFadeOutPace = 100;
+		var slideElFadeOutThreshold = slideElFadeOpacityPace = 0.05;
+		var slideElFadeInThreshold = 1 - slideElFadeOutThreshold;
 		/*************** start p1 ***************/
-		// p1
-		// plain canvas
 		var p1_bg_el = getId("p1-bg");
-		// ctx.drawImage(p1_bg_el, 0, 0);
-		// fabric
-		// fcanvas.setBackgroundImage(p1_bg_el, fcanvas.renderAll.bind(canvas));
-		var radius = 1000;
+		var radius = 1000 * globalRatio;		
 		var p1_bg_instance = new fabric.Image(p1_bg_el, {
-				left : 0,
-				top : 0,
+				left : - (p1_bg_el.width - fcanvas.width) / 2, // 0
+				top : - (p1_bg_el.height - fcanvas.height) / 2, // 0
 				clipTo : function (ctx) {
 					ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
 				}
@@ -24,28 +27,28 @@
 		fcanvas.add(p1_bg_instance);
 
 		var p1_header_el = getId("p1-header");
+		var p1_header_top = 80 * globalRatio;
 		var p1_header_instance = new fabric.Image(p1_header_el, {
 				left : 1000, // fcanvas.width / 2 - p1_header_el.width / 2,
-				scaleX : 0.75,
-				scaleY : 0.75,
-				top : 50
+				top : p1_header_top
 			});
 		fcanvas.add(p1_header_instance);
-		p1_header_instance.animate('left', 70, {
+		var p1_header_move_to_left = (fcanvas.width - p1_header_instance.width) / 2;
+		p1_header_instance.animate('left', p1_header_move_to_left, {
 			onChange : fcanvas.renderAll.bind(fcanvas),
 			duration : 2000,
 			easing : fabric.util.ease.easeOutBounce
 		});
 
 		var p1_footer_el = getId("p1-footer");
+		var p1_footer_left = p1_header_move_to_left;
 		var p1_footer_instance = new fabric.Image(p1_footer_el, {
-				left : 50, // fcanvas.width / 2 - p1_header_el.width / 2,
-				scaleX : 0.8,
-				scaleY : 0.8,
+				left : p1_footer_left * globalRatio, 
 				top : 0
 			});
 		fcanvas.add(p1_footer_instance);
-		p1_footer_instance.animate('top', 750, {
+		var p1_footer_move_to_top = 750 * globalRatio;
+		p1_footer_instance.animate('top', p1_footer_move_to_top /* 750 */, {
 			onChange : fcanvas.renderAll.bind(fcanvas),
 			duration : 2000,
 			easing : fabric.util.ease.easeOutBounce
@@ -77,35 +80,36 @@
 		}, 6000);
 
 		// resize to prepare p2
-
+		// resize to earth
+		var p2_earth_el = getId("p2-earth");
+		var resizeRatio = 0.02;
+		var earthShrinkPixel = 4;
 		setTimeout(function animate() {
-			//if (p1_bg_instance.getScaleX() < 0.75) {
-			//		return;
-			//}
-			if (p1_bg_instance.width < 600) {
+			if (p1_bg_instance.width <= p2_earth_el.width) {
 				console.log("left: " + p1_bg_instance.left);
 				console.log("top: " + p1_bg_instance.top);
 				return;
 			}
-			p1_bg_instance.left = p1_bg_instance.left + 5;
-			//p1_bg_instance.top = p1_bg_instance.top + 7;
-			p1_bg_instance.width = p1_bg_instance.width - 3;
-			p1_bg_instance.height = p1_bg_instance.height - 4;
-			p1_bg_instance.setScaleX(p1_bg_instance.getScaleX() - 0.01);
-			p1_bg_instance.setScaleY(p1_bg_instance.getScaleY() - 0.01);
+			// p1_bg_instance.top = p1_bg_instance.top + 7;
+			p1_bg_instance.left = p1_bg_instance.left + earthShrinkPixel;
+			p1_bg_instance.top = p1_bg_instance.top + earthShrinkPixel * 0.75;
+			p1_bg_instance.width = p1_bg_instance.width - earthShrinkPixel * 2;
+			p1_bg_instance.height = p1_bg_instance.height - earthShrinkPixel * 2;
+//			p1_bg_instance.left = p1_bg_instance.left + resizeRatio * p1_bg_instance.width / 2;
+			// p1_bg_instance.setScaleX(p1_bg_instance.getScaleX() - resizeRatio);
+			// p1_bg_instance.setScaleY(p1_bg_instance.getScaleY() - resizeRatio);
 			fcanvas.renderAll();
-			setTimeout(animate, 100);
+			setTimeout(animate, 50);
 		}, 6000);
 		// clip to circle
-
 		setTimeout(function animate() {
-			if (radius <= 300) {
+			if (radius <= p2_earth_el.width / 2) {
 				return;
 			}
 			fabric.util.animate({
-				startValue : 500, // Math.round(radius) === 300 ? 300 : 500,
-				endValue : 300, // Math.round(radius) === 300 ? 500 : 300,
-				duration : 1000,
+				startValue : 500 * globalRatio, // Math.round(radius) === 300 ? 300 : 500,
+				endValue : p2_earth_el.width / 2, // * globalRatio, // Math.round(radius) === 300 ? 500 : 300,
+				duration : 2000,
 				onChange : function (value) {
 					radius = value;
 					fcanvas.renderAll();
@@ -130,12 +134,10 @@
 		/**************** end p1 ****************/
 
 		/*************** start p2 ***************/
-		var p2_earth_el = getId("p2-earth");
+		
 		var p2_earth_instance = new fabric.Image(p2_earth_el, {
-				left : 65, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 125,
-				scaleX : 0.75,
-				scaleY : 0.75
+				left : (fcanvas.width - p2_earth_el.width) / 2,  // 65, // fcanvas.width / 2 - p1_header_el.width / 2,
+				top : 64 * globalRatio
 			});
 		p2_earth_instance.setOpacity(0);
 		setTimeout(function animate() {
@@ -152,10 +154,8 @@
 
 		var p2_shadow_el = getId("shadow");
 		var p2_shadow_instance = new fabric.Image(p2_shadow_el, {
-				left : 75, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 125 + p2_earth_instance.height * 0.75 + 15,
-				scaleX : 0.75,
-				scaleY : 0.75
+				left : (fcanvas.width - p2_shadow_el.width) / 2, 	// 75, // fcanvas.width / 2 - p1_header_el.width / 2,
+				top : 64 * globalRatio + p2_earth_instance.height + 15
 			});
 		p2_shadow_instance.setOpacity(0);
 		setTimeout(function animate() {
@@ -171,10 +171,8 @@
 		/*************** start p3 ***************/
 		var p3_footer_el = getId("p3-footer");
 		var p3_footer_instance = new fabric.Image(p3_footer_el, {
-				left : 120, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 125 + p2_earth_instance.height * 0.75 + 15 + p2_shadow_instance.height * 0.75 + 20,
-				scaleX : 0.6,
-				scaleY : 0.6
+				left : (fcanvas.width - p3_footer_el.width) / 2, // fcanvas.width / 2 - p1_header_el.width / 2,
+				top : 64 * globalRatio + p2_earth_instance.height + 15 + p2_shadow_instance.height + 20
 			});
 		p3_footer_instance.setOpacity(0);
 		setTimeout(function animate() {
@@ -253,7 +251,7 @@
 				console.log("Reach to maximum size");
 				return;
 			}
-			addBallRandomly(600, 800); // new frame to footer
+			addBallRandomly((fcanvas.width - 30 * globalRatio), (fcanvas.height - 40 * globalRatio)); // new frame to footer
 			setTimeout(animate, 10);
 		}, 14000); // time should be after earth is removed
 		
@@ -261,6 +259,48 @@
 		/**************** end p4 ****************/
 		
 		/*************** start p5 ***************/
+		
+		// add pyramid
+		var p5_pyramid_el = getId("p5-pyramid");
+		
+		var p5_pyramid_left = 40 * globalRatio;
+		var p5_pyramid_top = 110 * globalRatio;
+		var p5_larger_pyramid_height = 160 * globalRatio;
+		var p5_smaller_pyramid_height = 120 * globalRatio;
+				
+		var pyramidL = Area.createNew();
+		var plw = 130;
+		var plx = p5_pyramid_left + plw/2; // 175;
+		var ply = p5_pyramid_top + p5_larger_pyramid_height * 0.75; // 230;
+		pyramidL.init(plx, ply, plw/2);		
+		
+		var pyramidC = Area.createNew();
+		var pcw = 140;
+		var pcx = p5_pyramid_left + plw + pcw/2; // 400;
+		var pcy = p5_pyramid_top + p5_larger_pyramid_height * 0.75 + 10 * globalRatio; // 260; 10*globalRatio for adjust
+		pyramidC.init(pcx, pcy, pcw/2);
+		
+		var pyramidR = Area.createNew();
+		var prw = 110; // 55;
+		var prx = p5_pyramid_left + p5_pyramid_el.width - prw/2;
+		var pry = p5_pyramid_top + p5_pyramid_el.height - (p5_smaller_pyramid_height * 0.25);
+		pyramidR.init(prx, pry, prw/2);
+			
+		var p5_pyramid_instance = new fabric.Image(p5_pyramid_el, {
+				opacity : 0,
+				left : p5_pyramid_left,
+				top : p5_pyramid_top
+			});
+		fcanvas.add(p5_pyramid_instance);
+		// fadeIn pyramid
+		setTimeout(function animate() {
+			if (p5_pyramid_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, 20000);
 		var explode = false;
 		// move the ball and fade out
 		setTimeout(function animate() {
@@ -271,68 +311,27 @@
 			if (allBalls.length == totalNum * 2 - blueNum) {
 				allBalls.forEach(function (b) {
 					if (b.targetPoint === undefined) {
-						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3); 
+						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
+							pyramidL, pyramidC, pyramidR); 
 					}
-					animateBallScaleAndMoveToPyramid(b, b.targetPoint);
+					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
 				});
 				fcanvas.renderAll();
 			}
 			setTimeout(animate, 100);
 		}, 15000);
-		var pyramidL = Pyramid.createNew();
-		pyramidL.init(175, 230, 65);		
-		var pyramidC = Pyramid.createNew();
-		pyramidC.init(400, 260, 70);
-		var pyramidR = Pyramid.createNew();
-		pyramidR.init(490, 450, 55);
-		// add pyramid
-		var p5_pyramid_el = getId("p5-pyramid");
-		var p5_pyramid_instance = new fabric.Image(p5_pyramid_el, {
-				opacity : 0,
-				left : 40,
-				scaleX : 1,
-				scaleY : 1,
-				top : 110
-			});
-		fcanvas.add(p5_pyramid_instance);
-		// fade in side
-		setTimeout(function animate() {
-			if (p5_pyramid_instance.getOpacity() >= 0.95) {
-				return;
-			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + 0.05);
-			fcanvas.renderAll();
-			setTimeout(animate, 50);
-		}, 20000);
 		
-		var p5_body_el = getId("p5-body");
-		var p5_body_instance = new fabric.Image(p5_body_el, {
-				left : 1000,
-				scaleX : 0.60,
-				scaleY : 0.60,
-				top : 480
-			});
-		// add body 
-		setTimeout(function () {			
-			fcanvas.add(p5_body_instance);
-			p5_body_instance.animate('left', 210, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
-				easing : fabric.util.ease.easeOutCubic
-			});
-		}, 25100);
-		
-		// add side font 
+		// add side font 		
 		var p5_side_el = getId("p5-side");
+		var p5_side_left = 50 * globalRatio;
+		var p5_side_top = p5_pyramid_instance.top + p5_larger_pyramid_height + 40 * globalRatio;
 		var p5_side_instance = new fabric.Image(p5_side_el, {
 				opacity : 0,
-				left : 20,
-				scaleX : 0.70,
-				scaleY : 0.70,
-				top : 300
+				left : p5_side_left, // 20,
+				top : p5_side_top // 300
 			});
 		fcanvas.add(p5_side_instance);
-		// fade in side
+		// fadeIn side
 		setTimeout(function animate() {
 			if (p5_side_instance.getOpacity() >= 0.95) {
 				return;
@@ -341,70 +340,85 @@
 			fcanvas.renderAll();
 			setTimeout(animate, 50);
 		}, 25000);
-		
-		var p5_footer_el = getId("p5-footer");
-		var p5_footer_instance = new fabric.Image(p5_footer_el, {
+		// add body 
+		var p5_body_el = getId("p5-body");
+		var p5_body_instance = new fabric.Image(p5_body_el, {
 				left : 1000,
-				scaleX : 0.65,
-				scaleY : 0.65,
-				top : 800
+				top : p5_pyramid_top + p5_pyramid_instance.height + 20 * globalRatio
 			});
-		// add footer
-		setTimeout(function () {
-			fcanvas.add(p5_footer_instance);
-			p5_footer_instance.animate('left', 240, {
+		// easeOut body
+		var p5_body_move_to_left = p5_side_left + p5_side_el.width + 10 * globalRatio;
+		setTimeout(function () {			
+			fcanvas.add(p5_body_instance);
+			p5_body_instance.animate('left', p5_body_move_to_left /* 280 * globalRatio */, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
 				duration : 2000,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, 25500);
-		
-		/**************** end p5 ****************/
-		/*************** start p6 ***************/
-		// fade out pyramid and remove 
-		// setTimeout(animateFadeOutAndRemove(p5_pyramid_instance, -0.05, 50), 30000);			
-		// fadeOutAndRemove p1_header 
+		}, 25100);
+		// add footer
+		var p5_footer_el = getId("p5-footer");
+		var p5_footer_top = p5_side_top + p5_side_el.height - p5_footer_el.height - 10 * globalRatio;
+		var p5_footer_instance = new fabric.Image(p5_footer_el, {
+				left : 1000,
+				top : p5_footer_top
+			});
+		// easeOut footer
+		var p5_footer_move_to_left = p5_side_left + p5_side_instance.width + 10 * globalRatio;
+		setTimeout(function () {
+			fcanvas.add(p5_footer_instance);
+			p5_footer_instance.animate('left', p5_footer_move_to_left, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, 25500);		
+		// fadeOut pyramid and remove 		
+		var p5_fadeOutTime = 35000;
 		setTimeout(function animate() {
-			if (p5_pyramid_instance.getOpacity() <= 0.05) {
+			if (p5_pyramid_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p5_pyramid_instance);	
 				return;
 			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() - 0.05);
+			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 100);
-		}, 35000);
+			setTimeout(animate, slideElFadeOutPace);
+		}, p5_fadeOutTime);
 		setTimeout(function animate() {
-			if (p5_side_instance.getOpacity() <= 0.05) {
+			if (p5_side_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p5_side_instance);	
 				return;
 			}
-			p5_side_instance.setOpacity(p5_side_instance.getOpacity() - 0.05);
+			p5_side_instance.setOpacity(p5_side_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 100);
-		}, 35000);
+			setTimeout(animate, slideElFadeOutPace);
+		}, p5_fadeOutTime);
 		setTimeout(function animate() {
-			if (p5_body_instance.getOpacity() <= 0.05) {
+			if (p5_body_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p5_body_instance);	
 				return;
 			}
-			p5_body_instance.setOpacity(p5_body_instance.getOpacity() - 0.05);
+			p5_body_instance.setOpacity(p5_body_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 100);
-		}, 35000);
+			setTimeout(animate, slideElFadeOutPace);
+		}, p5_fadeOutTime);
 		setTimeout(function animate() {
-			if (p5_footer_instance.getOpacity() <= 0.05) {
+			if (p5_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p5_footer_instance);	
 				return;
 			}
-			p5_footer_instance.setOpacity(p5_footer_instance.getOpacity() - 0.05);
+			p5_footer_instance.setOpacity(p5_footer_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 100);
-		}, 35000);		
+			setTimeout(animate, slideElFadeOutPace);
+		}, p5_fadeOutTime);		
+		/**************** end p5 ****************/
+		/****************************************/
+		/*************** start p6 ***************/		
 		// explode 
 		setTimeout(function resetExploded() {
 			explode = true;
 			allBalls.forEach(function (b) {
-				b.targetPoint = randomizeTarget(60, 600, 75, 800);
+				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
 			});
 		}, 35000);
 		setTimeout(function animate() {
@@ -413,9 +427,6 @@
 			}
 			if (p5_footer_instance.getOpacity() <= 0.2) {
 				allBalls.forEach(function (b) {
-					//if (b.targetPoint === undefined) {
-					//	b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3);
-					//}
 					animateBallScaleAndExplode(b, b.targetPoint);
 				});
 				fcanvas.renderAll();
@@ -423,7 +434,541 @@
 			setTimeout(animate, 100);
 		}, 35000);
 		/**************** end p6 ****************/
+		/****************************************/
+		/*************** start p7 ***************/
+		// remove all
+		var p7_startTime = 40000;
+		// setTimeout(removeAllBalls, p7_startTime);
 		
+		var p7_header_el = getId('p7-header');
+		var p7_header_left = (fcanvas.width - p7_header_el.width) / 2;
+		var p7_header_top =  p1_header_top;
+		var p7_header_instance = new fabric.Image(p7_header_el, {
+			opacity : 0,
+			left : p7_header_left,
+			top : p7_header_top
+		});		
+		fcanvas.add(p7_header_instance);		
+		// fadeIn header
+		setTimeout(function animate() {
+			if (p7_header_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p7_header_instance.setOpacity(p7_header_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p7_startTime + 13000);		
+		// add greatwall		
+		var p7_greatwall_el = getId("p7-greatwall");
+		
+		var p7_greatwall_left = (fcanvas.width - p7_greatwall_el.width)/2; // 40 * globalRatio;
+		var p7_greatwall_top = p7_header_left + p7_header_el.height + 80 * globalRatio;
+		
+		var greatwallL = Area.createNew();
+		var plw = 80 * globalRatio;
+		var plx = p7_greatwall_left + p7_greatwall_el.width * 0.2; 
+		var ply = p7_greatwall_top + p7_greatwall_el.height * 0.5; // TBD
+		greatwallL.init(plx, ply, plw/2);		
+		
+		var greatwallC = Area.createNew();
+		var pcw = 80 * globalRatio;
+		var pcx = p7_greatwall_left + p7_greatwall_el.width * 0.5; 
+		var pcy = p7_greatwall_top + p7_greatwall_el.height * 0.5; // TBD
+		greatwallC.init(pcx, pcy, pcw/2);
+		
+		var greatwallR = Area.createNew();
+		var prw = 80 * globalRatio;
+		var prx = p7_greatwall_left + p7_greatwall_el.width - p7_greatwall_el.width * 0.2;
+		var pry = p7_greatwall_top + p7_greatwall_el.height * 0.5; // TBD
+		greatwallR.init(prx, pry, prw/2);
+			
+		var p7_greatwall_instance = new fabric.Image(p7_greatwall_el, {
+				opacity : 0,
+				left : p7_greatwall_left,
+				top : p7_greatwall_top
+			});
+		fcanvas.add(p7_greatwall_instance);
+		// fadeIn greatwall and move balls to great wall
+		setTimeout(function p7_started() {
+			explode = false;
+			Steps.P07_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); // reset for future new target
+			force = force * 3; // reset force 
+		}, p7_startTime - 100);		
+		setTimeout(function animate() {
+			if (p7_greatwall_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p7_startTime + 10000);
+		setTimeout(function animate() {
+			// TODO return condition
+			if (explode) {
+				return;
+			}
+			if (allBalls.length == totalNum * 2 - blueNum) {
+				allBalls.forEach(function (b) {
+					if (b.targetPoint === undefined) {
+						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
+							greatwallL, greatwallC, greatwallR); 
+					}
+					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
+				});
+				fcanvas.renderAll();
+			}
+			setTimeout(animate, 100);
+		}, p7_startTime);
+		
+		// add header2  
+		var p7_header2_el = getId("p7-header2");
+		var p7_header2_instance = new fabric.Image(p7_header2_el, {
+			left : 1000,
+			top : p7_header_top + p7_header_instance.height + 20 * globalRatio
+		});
+		// easeOut header2
+		var p7_header2_move_to_left = p7_header_left + p7_header_el.width - p7_header2_el.width - 10 * globalRatio;
+		setTimeout(function () {			
+			fcanvas.add(p7_header2_instance);
+			p7_header2_instance.animate('left', p7_header2_move_to_left, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p7_startTime + 15000 + 100);
+		// add footer  
+		var p7_footer_el = getId("p7-footer");
+		var p7_footer_top = p7_greatwall_top + p7_greatwall_el.height + 20 * globalRatio;
+		var p7_footer_instance = new fabric.Image(p7_footer_el, {
+			left : 1000,
+			top : p7_footer_top
+		});
+		// easeOut footer
+		var p7_footer_move_to_left = p7_header_left + p7_header_el.width - p7_footer_el.width;
+		setTimeout(function () {			
+			fcanvas.add(p7_footer_instance);
+			p7_footer_instance.animate('left', p7_footer_move_to_left, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p7_startTime + 15000 + 100);
+		var p7_fadeOutTime = p7_startTime + 20000;
+		// fadeOut greatwall and remove 		
+		setTimeout(function animate() {
+			if (p7_greatwall_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p7_greatwall_instance);	
+				return;
+			}
+			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p7_fadeOutTime);
+		setTimeout(function animate() {
+			if (p7_header_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p7_header_instance);	
+				return;
+			}
+			p7_header_instance.setOpacity(p7_header_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p7_fadeOutTime);
+		setTimeout(function animate() {
+			if (p7_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p7_header2_instance);	
+				return;
+			}
+			p7_header2_instance.setOpacity(p7_header2_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p7_fadeOutTime);
+		setTimeout(function animate() {
+			if (p7_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p7_footer_instance);	
+				return;
+			}
+			p7_footer_instance.setOpacity(p7_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p7_fadeOutTime);		
+		/**************** end p7 ****************/
+		/****************************************/
+		/*************** start p8 ***************/
+		// explode 
+		var p8_explodeTime = p7_fadeOutTime;
+		setTimeout(function resetExploded() {
+			explode = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
+			});
+		}, p8_explodeTime);
+		setTimeout(function animate() {
+			if (Steps.P09_STARTED) {
+				return;
+			}
+			if (p7_footer_instance.getOpacity() <= 0.2) {
+				allBalls.forEach(function (b) {
+					animateBallScaleAndExplode(b, b.targetPoint);
+				});
+				fcanvas.renderAll();
+			}
+			setTimeout(animate, 100);
+		}, p8_explodeTime);
+		/**************** end p8 ****************/
+		/****************************************/
+		/*************** start p9 ***************/
+		// remove all
+		var p9_startTime = 70000;
+		// setTimeout(removeAllBalls, p9_startTime);
+		var p9_header_el = getId('p9-header');
+		var p9_header_top =  p1_header_top + 20;
+		var p9_header_instance = new fabric.Image(p9_header_el, {
+			left : -500,
+			top : p9_header_top
+		});		
+		// easeOut header
+		var p9_header_move_to_right = 40 * globalRatio;;
+		setTimeout(function () {			
+			fcanvas.add(p9_header_instance);
+			p9_header_instance.animate('left', p9_header_move_to_right, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p9_startTime + 15000 + 100);
+		
+		// add operahouse		
+		var p9_operahouse_el = getId("p9-soh");
+		
+		var p9_operahouse_left = (fcanvas.width - p9_operahouse_el.width)/2; // 40 * globalRatio;
+		var p9_operahouse_top = p9_header_top + p9_header_el.height + 40 * globalRatio;
+		
+		var operahouseL = Area.createNew();
+		var hlw = 80 * globalRatio;
+		var hlx = p9_operahouse_left + p9_operahouse_el.width * 0.2; 
+		var hly = p9_operahouse_top + p9_operahouse_el.height * 0.5; // TBD
+		operahouseL.init(hlx, hly, hlw/2);		
+		
+		var operahouseC = Area.createNew();
+		var hcw = 80 * globalRatio;
+		var hcx = p9_operahouse_left + p9_operahouse_el.width * 0.5; 
+		var hcy = p9_operahouse_top + p9_operahouse_el.height * 0.5; // TBD
+		operahouseC.init(hcx, hcy, hcw/2);
+		
+		var operahouseR = Area.createNew();
+		var hrw = 80 * globalRatio;
+		var hrx = p9_operahouse_left + p9_operahouse_el.width - p9_operahouse_el.width * 0.2;
+		var hry = p9_operahouse_top + p9_operahouse_el.height * 0.5; // TBD
+		operahouseR.init(hrx, hry, hrw/2);
+			
+		var p9_operahouse_instance = new fabric.Image(p9_operahouse_el, {
+				opacity : 0,
+				left : p9_operahouse_left,
+				top : p9_operahouse_top
+			});
+		fcanvas.add(p9_operahouse_instance);
+		// fadeIn greatwall and move balls to great wall
+		setTimeout(function p9_started() {
+			explode = false;
+			Steps.P09_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); // reset for future new target
+			// force = force * 4; // reset force 
+		}, p9_startTime - 100);		
+		setTimeout(function animate() {
+			if (p9_operahouse_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p9_startTime + 10000);
+		setTimeout(function animate() {
+			// TODO return condition
+			if (explode) {
+				return;
+			}
+			if (allBalls.length == totalNum * 2 - blueNum) {
+				allBalls.forEach(function (b) {
+					if (b.targetPoint === undefined) {
+						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
+							operahouseL, operahouseC, operahouseR); 
+					}
+					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
+				});
+				fcanvas.renderAll();
+			}
+			setTimeout(animate, 100);
+		}, p9_startTime);
+		
+		// add footer  
+		var p9_footer_el = getId("p9-footer");
+		var p9_footer_left = (fcanvas.width - p9_footer_el.width)/2;
+		var p9_footer_top = p9_operahouse_top + p9_operahouse_el.height + 20 * globalRatio;
+		var p9_footer_instance = new fabric.Image(p9_footer_el, {
+			opacity : 0,
+			left : p9_footer_left,
+			top : p9_footer_top
+		});
+		fcanvas.add(p9_footer_instance);	
+		// fadeIn footer
+		setTimeout(function animate() {
+			if (p9_footer_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p9_startTime + 13000);	
+		// add footer2  
+		var p9_footer2_el = getId("p9-footer2");
+		var p9_footer2_top = p9_footer_top + p9_footer_el.height + 20 * globalRatio;
+		var p9_footer2_instance = new fabric.Image(p9_footer2_el, {
+			left : -500,
+			top : p9_footer2_top
+		});
+		// easeOut footer2
+		var p9_footer2_move_to_right = p9_footer_left;
+		setTimeout(function () {			
+			fcanvas.add(p9_footer2_instance);
+			p9_footer2_instance.animate('left', p9_footer2_move_to_right, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p9_startTime + 15000 + 100);
+		var p9_fadeOutTime = p9_startTime + 20000;
+		// fadeOut greatwall and remove 		
+		setTimeout(function animate() {
+			if (p9_operahouse_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p9_operahouse_instance);	
+				return;
+			}
+			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p9_fadeOutTime);
+		setTimeout(function animate() {
+			if (p9_header_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p9_header_instance);	
+				return;
+			}
+			p9_header_instance.setOpacity(p9_header_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p9_fadeOutTime);
+		setTimeout(function animate() {
+			if (p9_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p9_footer_instance);	
+				return;
+			}
+			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p9_fadeOutTime);
+		setTimeout(function animate() {
+			if (p9_footer2_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p9_footer2_instance);	
+				return;
+			}
+			p9_footer2_instance.setOpacity(p9_footer2_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p9_fadeOutTime);		
+		/**************** end p9 ****************/
+		/****************************************/
+		/*************** start p10 **************/
+		var p10_explodeTime = p9_fadeOutTime;
+		setTimeout(function resetExploded() {
+			explode = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
+			});
+		}, p10_explodeTime);
+		setTimeout(function animate() {
+			if (Steps.P11_STARTED) {
+				return;
+			}
+			if (p9_footer_instance.getOpacity() <= 0.2) {
+				allBalls.forEach(function (b) {
+					animateBallScaleAndExplode(b, b.targetPoint);
+				});
+				fcanvas.renderAll();
+			}
+			setTimeout(animate, 100);
+		}, p10_explodeTime);
+		/**************** end p10 ***************/
+		/****************************************/
+		/*************** start p11 **************/
+		// remove all
+		var p11_startTime = 80000;
+		// setTimeout(removeAllBalls, p9_startTime);
+		
+		// add side   
+		var p11_side_el = getId("p11-side");
+		var p11_side_left = fcanvas.width - p11_side_el.width - 40 * globalRatio;
+		var p11_side_top = p1_header_top;
+		var p11_side_instance = new fabric.Image(p11_side_el, {
+			opacity : 0,
+			left : p11_side_left,
+			top : p11_side_top
+		});
+		fcanvas.add(p11_side_instance);	
+		// fadeIn footer
+		setTimeout(function animate() {
+			if (p11_side_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p11_side_instance.setOpacity(p11_side_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p11_startTime + 13000);	
+		
+		var p11_header_el = getId('p11-header');
+		var p11_header_top =  p11_side_top + 80 * globalRatio;
+		var p11_header_instance = new fabric.Image(p11_header_el, {
+			left : -500,
+			top : p11_header_top
+		});			
+		// easeOut header
+		var p11_header_move_to_right = p11_side_left - p11_header_el.width - 20 * globalRatio;
+		setTimeout(function () {			
+			fcanvas.add(p11_header_instance);
+			p11_header_instance.animate('left', p11_header_move_to_right, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p11_startTime + 15000 + 100);
+		
+		// add pearltower		
+		var p11_pearltower_el = getId("p11-opt");
+		
+		var p11_pearltower_left = 0; 
+		var p11_pearltower_top = p11_header_top + p11_header_el.height + 40 * globalRatio;
+		
+		var pearltowerL = Area.createNew();
+		var olw = 80 * globalRatio;
+		var olx = p11_pearltower_left + p11_pearltower_el.width * 0.2; 
+		var oly = p11_pearltower_top + p11_pearltower_el.height * 0.9; // TBD
+		pearltowerL.init(olx, oly, olw/2);		
+		
+		var pearltowerC = Area.createNew();
+		var ocw = 80 * globalRatio;
+		var ocx = p11_pearltower_left + p11_pearltower_el.width * 0.5; 
+		var ocy = p11_pearltower_top + p11_pearltower_el.height * 0.5; // TBD
+		pearltowerC.init(ocx, ocy, ocw/2);
+		
+		var pearltowerR = Area.createNew();
+		var orw = 80 * globalRatio;
+		var orx = p11_pearltower_left + p11_pearltower_el.width - p11_pearltower_el.width * 0.2;
+		var ory = p11_pearltower_top + p11_pearltower_el.height * 0.9; // TBD
+		pearltowerR.init(orx, ory, orw/2);
+			
+		var p11_pearltower_instance = new fabric.Image(p11_pearltower_el, {
+				opacity : 0,
+				left : p11_pearltower_left,
+				top : p11_pearltower_top
+			});
+		fcanvas.add(p11_pearltower_instance);
+		// fadeIn greatwall and move balls to great wall
+		setTimeout(function p11_started() {
+			explode = false;
+			Steps.P11_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); // reset for future new target			
+		}, p11_startTime - 100);		
+		setTimeout(function animate() {
+			if (p11_pearltower_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p11_startTime + 10000);
+		setTimeout(function animate() {
+			// TODO return condition
+			if (explode) {
+				return;
+			}
+			if (allBalls.length == totalNum * 2 - blueNum) {
+				allBalls.forEach(function (b) {
+					if (b.targetPoint === undefined) {
+						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
+							pearltowerL, pearltowerC, pearltowerR); 
+					}
+					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
+				});
+				fcanvas.renderAll();
+			}
+			setTimeout(animate, 100);
+		}, p11_startTime);
+				
+		// add header2  
+		var p11_header2_el = getId("p11-header2");
+		var p11_header2_top = p11_header_top - p11_header2_el.height - 20 * globalRatio;
+		var p11_header2_instance = new fabric.Image(p11_header2_el, {
+			left : -500,
+			top : p11_header2_top
+		});
+		// easeOut header2
+		var p11_header2_move_to_right = p11_side_left - p11_header2_el.width - 20 * globalRatio;
+		setTimeout(function () {			
+			fcanvas.add(p11_header2_instance);
+			p11_header2_instance.animate('left', p11_header2_move_to_right, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : 2000,
+				easing : fabric.util.ease.easeOutCubic
+			});
+		}, p11_startTime + 15000 + 100);
+		var p11_fadeOutTime = p11_startTime + 20000;
+		// fadeOut pearl tower and remove 		
+		//setTimeout(function animate() {
+		//	if (p11_pearltower_instance.getOpacity() <= slideElFadeOutThreshold) {
+		//		fcanvas.remove(p11_pearltower_instance);	
+		//		return;
+		//	}
+		//	p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityPace);
+		//	fcanvas.renderAll();
+		//	setTimeout(animate, slideElFadeOutPace);
+		//}, p11_fadeOutTime);
+		//setTimeout(function animate() {
+		//	if (p11_header_instance.getOpacity() <= slideElFadeOutThreshold) {
+		//		fcanvas.remove(p11_header_instance);	
+		//		return;
+		//	}
+		//	p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityPace);
+		//	fcanvas.renderAll();
+		//	setTimeout(animate, slideElFadeOutPace);
+		//}, p11_fadeOutTime);
+		//setTimeout(function animate() {
+		//	if (p11_side_instance.getOpacity() <= slideElFadeOutThreshold) {
+		//		fcanvas.remove(p11_side_instance);	
+		//		return;
+		//	}
+		//	p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityPace);
+		//	fcanvas.renderAll();
+		//	setTimeout(animate, slideElFadeOutPace);
+		//}, p11_fadeOutTime);
+		//setTimeout(function animate() {
+		//	if (p11_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
+		//		fcanvas.remove(p11_header2_instance);	
+		//		return;
+		//	}
+		//	p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityPace);
+		//	fcanvas.renderAll();
+		//	setTimeout(animate, slideElFadeOutPace);
+		//}, p11_fadeOutTime);
+		/**************** end p11 ***************/
+		/****************************************/
+		/*************** start p12 **************/
+		
+		/**************** end p12 ***************/
 		
 		function getId(id) {
 			return document.getElementById(id);
@@ -438,6 +983,12 @@
 		//	fcanvas.renderAll();
 		//	setTimeout(animateFadeOutAndRemove, inMillseconds);
 		//};
+		function removeAllBalls() {
+			allBalls.forEach(function (b) {
+					fcanvas.remove(b);
+			});
+			fcanvas.renderAll();
+		};
 		
 		function addBalls(topFrameFrom, topFrameTo) {
 			while (allBalls.length != totalNum) {
@@ -544,7 +1095,7 @@
 			}
 		};
 		
-		function animateBallScaleAndMoveToPyramid(b, target) {
+		function animateBallScaleAndMoveToTargetArea(b, target) {
 			// shrink
 			animateBallScale(b, 0.2);
 			// move to 
@@ -560,30 +1111,30 @@
 			animateBallMove(b, target);
 		};
 		
-		function randomizeBallTarget(index) {
+		function randomizeBallTarget(index, areaL, areaC, areaR) {
 			var targetPoint = null;
 			var px = 0;
 			var py = 0;
-			var pyramid = null;
+			var area = null;
 			switch (index) {
 				case 0:
-					pyramid = pyramidL;
+					area = areaL;
 					break;
 				case 1:
-					pyramid = pyramidC;
+					area = areaC;
 					break;
 				case 2:
-					pyramid = pyramidR;
+					area = areaR;
 					break;
 				default:
-					var msg = "Out of pyramid scope: " + index;
+					var msg = "Out of area scope: " + index;
 					console.log(msg);
 					throw msg;
 			}
-			var leftFrameFrom = pyramid.cCoordinateX - pyramid.rectWidth;
-			var leftFrameTo = pyramid.cCoordinateX + pyramid.rectWidth;
-			var topFrameFrom = pyramid.cCoordinateY - pyramid.rectWidth;
-			var topFrameTo = pyramid.cCoordinateY + pyramid.rectWidth;
+			var leftFrameFrom = area.cCoordinateX - area.rectWidth;
+			var leftFrameTo = area.cCoordinateX + area.rectWidth;
+			var topFrameFrom = area.cCoordinateY - area.rectWidth;
+			var topFrameTo = area.cCoordinateY + area.rectWidth;
 			// px = utils.random.getRandomInt(leftFrameFrom, leftFrameTo); 
 			// py = utils.random.getRandomInt(topFrameFrom, topFrameTo);
 			// targetPoint = {x : px, y : py};
@@ -597,7 +1148,7 @@
 			return t;
 		};
 		
-		force = 0.05;		
+		var force = 0.05;		
 		var speed = 1; // 1 pixel toward the target
 		function animateBallMove(b, target) {
 			var dx = target.x - b.left;
@@ -634,16 +1185,20 @@
 				
 		function randomBall(colorType, style, topFrameFrom, topFrameTo) {
 			if (topFrameFrom == undefined) {
-				topFrameFrom = 75;
+				topFrameFrom = 75 * globalRatio;
 			}
 			if (topFrameTo == undefined) {
-				topFrameTo = 600;
+				topFrameTo = 600 * globalRatio;
 			}
-			// random access ball size 
+			// random access ball size 			
+			var ballSizeIndex = utils.random.getRandomInt(0, 2);
+			if (fcanvas.width >= 320) {
+				ballSizeIndex = utils.random.getRandomInt(1, 3);
+			}
 			var theBall = makeBall(getBallEl(colorType, style,
-						BallSize[Object.keys(BallSize)[utils.random.getRandomInt(0, 2)]] /* BallSize.SMALL */
+						BallSize[Object.keys(BallSize)[ballSizeIndex]] /* BallSize.SMALL */
 					),
-				utils.random.getRandomInt(60, 600), // left, 
+				utils.random.getRandomInt(60 * globalRatio, 600 * globalRatio), // left, 
 				utils.random.getRandomInt(topFrameFrom, topFrameTo), // top, 
 				utils.random.getRandomArbitrary(0.4, 0.9), // scale, 
 				utils.random.getRandomInt(0, 360) // angle
@@ -654,13 +1209,17 @@
 		
 		function randomLayoutAllBalls(array, num, colorType, style) {
 			for (var i = 0, len = num; i < len; i++) {
-				var left = utils.random.getRandomInt(60, 600);
-				var top = utils.random.getRandomInt(75, 600);				
+				var left = utils.random.getRandomInt(60 * globalRatio, 600 * globalRatio);
+				var top = utils.random.getRandomInt(75 * globalRatio, 600 * globalRatio);				
 				var scale = utils.random.getRandomArbitrary(0.4, 0.9);
 				var angle = utils.random.getRandomInt(0, 360);
-				var sizeRandomInt = utils.random.getRandomInt(0, 2);
+				var ballSizeIndex = utils.random.getRandomInt(0, 2);
+				if (fcanvas.width >= 320) {
+					ballSizeIndex = utils.random.getRandomInt(1, 3);
+				}
+				// var ballSizeIndex = utils.random.getRandomInt(0, 2);
 				// random access ball size 
-				var theBall = makeBall(getBallEl(colorType, style, BallSize[Object.keys(BallSize)[sizeRandomInt]]/* BallSize.SMALL */), 
+				var theBall = makeBall(getBallEl(colorType, style, BallSize[Object.keys(BallSize)[ballSizeIndex]]/* BallSize.SMALL */), 
 					left, top, scale, angle);
 				array[i] = theBall;
 				fcanvas.add(theBall);

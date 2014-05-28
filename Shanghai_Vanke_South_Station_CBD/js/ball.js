@@ -9,6 +9,7 @@
 };
 
 var BallSize = {
+  TINY: 20,
   SMALL: 40,
   MEDIUM: 80,
   LARGE: 160
