@@ -26,9 +26,8 @@ body,html
     overflow: hidden;
     position: relative;
 	/* border: 1px solid #000;
-    border-radius: 10px; */
-    margin-top: 2px;
-	
+    border-radius: 10px; 
+    margin-top: 2px;*/
 }
 
 #canvas {

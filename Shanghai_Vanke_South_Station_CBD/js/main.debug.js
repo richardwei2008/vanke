@@ -6,7 +6,9 @@
 		c.width = window.innerWidth;
 		c.height = window.innerHeight;
 		var ctx = c.getContext("2d");
-		var fcanvas = new fabric.Canvas('canvas');
+		// var fcanvas = new fabric.Canvas('canvas');
+		var fcanvas = new fabric.StaticCanvas('canvas');
+		fcanvas.selection = false; // disable selection
 		var aspectRatio = fcanvas.height * 1.0 / fcanvas.width;
 		
 		var globalRatio = fcanvas.width * 1.0 / normalizedWidth;
@@ -228,13 +230,13 @@
 		
 		/*************** start p4 ***************/
 		// add balls to the back of the earth while fade out 
-		var redNum = 19 * 2;
-		var yellowNum = 7 * 2;
-		var blackNum = 13 * 2;
-		var grayNum = 1 * 2;
-		var greenLightNum = 16 * 2;
-		var greenNum = 14 * 2;
-		var blueNum = 53 * 2;
+		var redNum = 19 		;//* 2;
+		var yellowNum = 7 		;//* 2;
+		var blackNum = 13 		;//* 2;
+		var grayNum = 1 		;//* 2;
+		var greenLightNum = 16 	;//* 2;
+		var greenNum = 14 		;//* 2;
+		var blueNum = 53 		;//* 2;
 		var totalNum = redNum + yellowNum + blackNum + grayNum + greenLightNum + greenNum + blueNum;
 		var redBalls = new Array(0);
 		var yellowBalls = new Array(0);
@@ -495,7 +497,7 @@
 			allBalls.forEach(function (b) {
 				b.targetPoint = undefined;
 			}); // reset for future new target
-			force = force * 3; // reset force 
+			// force = force * 2; // reset force 
 		}, p7_startTime - 100);		
 		setTimeout(function animate() {
 			if (p7_greatwall_instance.getOpacity() >= 0.95) {
@@ -621,7 +623,7 @@
 		/****************************************/
 		/*************** start p9 ***************/
 		// remove all
-		var p9_startTime = 70000;
+		var p9_startTime = p8_explodeTime + 5000;
 		// setTimeout(removeAllBalls, p9_startTime);
 		var p9_header_el = getId('p9-header');
 		var p9_header_top =  p1_header_top + 20;
@@ -805,9 +807,15 @@
 		/****************************************/
 		/*************** start p11 **************/
 		// remove all
-		var p11_startTime = 80000;
+		var p11_startTime = p10_explodeTime + 5000;
 		// setTimeout(removeAllBalls, p9_startTime);
-		
+		setTimeout(function p11_started() {
+			explode = false;
+			Steps.P11_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); // reset for future new target			
+		}, p11_startTime - 100);		
 		// add side   
 		var p11_side_el = getId("p11-side");
 		var p11_side_left = fcanvas.width - p11_side_el.width - 40 * globalRatio;
@@ -928,46 +936,78 @@
 		}, p11_startTime + 15000 + 100);
 		var p11_fadeOutTime = p11_startTime + 20000;
 		// fadeOut pearl tower and remove 		
-		//setTimeout(function animate() {
-		//	if (p11_pearltower_instance.getOpacity() <= slideElFadeOutThreshold) {
-		//		fcanvas.remove(p11_pearltower_instance);	
-		//		return;
-		//	}
-		//	p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityPace);
-		//	fcanvas.renderAll();
-		//	setTimeout(animate, slideElFadeOutPace);
-		//}, p11_fadeOutTime);
-		//setTimeout(function animate() {
-		//	if (p11_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-		//		fcanvas.remove(p11_header_instance);	
-		//		return;
-		//	}
-		//	p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityPace);
-		//	fcanvas.renderAll();
-		//	setTimeout(animate, slideElFadeOutPace);
-		//}, p11_fadeOutTime);
-		//setTimeout(function animate() {
-		//	if (p11_side_instance.getOpacity() <= slideElFadeOutThreshold) {
-		//		fcanvas.remove(p11_side_instance);	
-		//		return;
-		//	}
-		//	p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityPace);
-		//	fcanvas.renderAll();
-		//	setTimeout(animate, slideElFadeOutPace);
-		//}, p11_fadeOutTime);
-		//setTimeout(function animate() {
-		//	if (p11_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
-		//		fcanvas.remove(p11_header2_instance);	
-		//		return;
-		//	}
-		//	p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityPace);
-		//	fcanvas.renderAll();
-		//	setTimeout(animate, slideElFadeOutPace);
-		//}, p11_fadeOutTime);
+		setTimeout(function animate() {
+			if (p11_pearltower_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p11_pearltower_instance);	
+				return;
+			}
+			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p11_fadeOutTime);
+		setTimeout(function animate() {
+			if (p11_header_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p11_header_instance);	
+				return;
+			}
+			p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p11_fadeOutTime);
+		setTimeout(function animate() {
+			if (p11_side_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p11_side_instance);	
+				return;
+			}
+			p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p11_fadeOutTime);
+		setTimeout(function animate() {
+			if (p11_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p11_header2_instance);	
+				return;
+			}
+			p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, slideElFadeOutPace);
+		}, p11_fadeOutTime);
+		
 		/**************** end p11 ***************/
 		/****************************************/
 		/*************** start p12 **************/
+		var p12_startTime = p11_fadeOutTime - 2000;
+		setTimeout(function p12_started() {
+			explode = false;
+			Steps.P12_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); 		
+		}, p12_startTime);	
 		
+		var p12_bg_el = getId('p12-bg');
+		var p12_bg_instance = new fabric.Image(p12_bg_el, {
+			opacity : 0,
+			left : (fcanvas.width - p12_bg_el.width)/2,
+			top : 0
+		});			
+		fcanvas.add(p12_bg_instance);
+		setTimeout(function animate() {
+			if (p12_bg_instance.getOpacity() >= 0.95) {
+				return;
+			}
+			p12_bg_instance.setOpacity(p12_bg_instance.getOpacity() + 0.05);
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+		}, p12_startTime);
+		// fadeOutAndRemove allBalls
+		setTimeout(function animate() {
+			allBalls.forEach(function (b) {
+				fcanvas.remove(b);	
+				
+			}); 
+			fcanvas.renderAll();
+		}, p12_startTime + 1000);
 		/**************** end p12 ***************/
 		
 		function getId(id) {
@@ -1242,6 +1282,7 @@
 				angle : angle,
 				originAngle : angle				
 			});
+			_instance.set('selectable', false);
 			_instance.setOpacity(utils.random.getRandomArbitrary(0.8, 1.0));
 			return _instance;
 		};
