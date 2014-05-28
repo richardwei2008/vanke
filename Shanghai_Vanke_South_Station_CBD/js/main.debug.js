@@ -22,9 +22,9 @@
 		var p1_bg_instance = new fabric.Image(p1_bg_el, {
 				left : - (p1_bg_el.width - fcanvas.width) / 2, // 0
 				top : - (p1_bg_el.height - fcanvas.height) / 2, // 0
-				clipTo : function (ctx) {
-					ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
-				}
+				//clipTo : function (ctx) {
+				//	ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+				//}
 			});
 		fcanvas.add(p1_bg_instance);
 
@@ -104,31 +104,31 @@
 			setTimeout(animate, 50);
 		}, 6000);
 		// clip to circle
-		setTimeout(function animate() {
-			if (radius <= p2_earth_el.width / 2) {
-				return;
-			}
-			fabric.util.animate({
-				startValue : 500 * globalRatio, // Math.round(radius) === 300 ? 300 : 500,
-				endValue : p2_earth_el.width / 2, // * globalRatio, // Math.round(radius) === 300 ? 500 : 300,
-				duration : 2000,
-				onChange : function (value) {
-					radius = value;
-					fcanvas.renderAll();
-				},
-				onComplete : animate
-			});
-		}, 7000);
+		//setTimeout(function animate() {
+		//	if (radius <= p2_earth_el.width / 2) {
+		//		return;
+		//	}
+		//	fabric.util.animate({
+		//		startValue : 500 * globalRatio, // Math.round(radius) === 300 ? 300 : 500,
+		//		endValue : p2_earth_el.width / 2, // * globalRatio, // Math.round(radius) === 300 ? 500 : 300,
+		//		duration : 2000,
+		//		onChange : function (value) {
+		//			radius = value;
+		//			fcanvas.renderAll();
+		//		},
+		//		onComplete : animate
+		//	});
+		//}, 7000);
 		// fadeOutAndRemove p1_bg
-		setTimeout(function animate() {
-			if (p1_bg_instance.getOpacity() <= 0.05) {
-				fcanvas.remove(p1_bg_instance);	
-				return;
-			}
-			p1_bg_instance.setOpacity(p1_bg_instance.getOpacity() - 0.05);
-			fcanvas.renderAll();
-			setTimeout(animate, 50);
-		}, 8000);
+		// setTimeout(function animate() {
+		// 	if (p1_bg_instance.getOpacity() <= 0.05) {
+		// 		fcanvas.remove(p1_bg_instance);	
+		// 		return;
+		// 	}
+		// 	p1_bg_instance.setOpacity(p1_bg_instance.getOpacity() - 0.05);
+		// 	fcanvas.renderAll();
+		// 	setTimeout(animate, 50);
+		// }, 8000);
 
 		// setTimeout(function () {
 		// 	fcanvas.remove(p1_bg_instance);
@@ -136,28 +136,28 @@
 		/**************** end p1 ****************/
 
 		/*************** start p2 ***************/
-		
-		var p2_earth_instance = new fabric.Image(p2_earth_el, {
-				left : (fcanvas.width - p2_earth_el.width) / 2,  // 65, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 64 * globalRatio
-			});
-		p2_earth_instance.setOpacity(0);
-		setTimeout(function animate() {
-			fcanvas.add(p2_earth_instance);
-		}, 8000);
-		setTimeout(function animate() {
-			if (p2_earth_instance.getOpacity() >= 0.95) {
-				return;
-			}
-			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() + 0.05);
-			fcanvas.renderAll();
-			setTimeout(animate, 50);
-		}, 8800);
+		var p2_earth_instance = p1_bg_instance;
+		// var p2_earth_instance = new fabric.Image(p2_earth_el, {
+		// 		opacity : 0,
+		// 		left : (fcanvas.width - p2_earth_el.width) / 2,  // 65, // fcanvas.width / 2 - p1_header_el.width / 2,
+		// 		top : 64 * globalRatio
+		// 	});
+		// setTimeout(function animate() {
+		// 	fcanvas.add(p2_earth_instance);
+		// }, 8000);
+		// setTimeout(function animate() {
+		// 	if (p2_earth_instance.getOpacity() >= 0.95) {
+		// 		return;
+		// 	}
+		// 	p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() + 0.05);
+		// 	fcanvas.renderAll();
+		// 	setTimeout(animate, 50);
+		// }, 8800);
 
 		var p2_shadow_el = getId("shadow");
 		var p2_shadow_instance = new fabric.Image(p2_shadow_el, {
 				left : (fcanvas.width - p2_shadow_el.width) / 2, 	// 75, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 64 * globalRatio + p2_earth_instance.height + 15
+				top : 64 * globalRatio + p2_earth_el.height + 15
 			});
 		p2_shadow_instance.setOpacity(0);
 		setTimeout(function animate() {
@@ -174,7 +174,7 @@
 		var p3_footer_el = getId("p3-footer");
 		var p3_footer_instance = new fabric.Image(p3_footer_el, {
 				left : (fcanvas.width - p3_footer_el.width) / 2, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 64 * globalRatio + p2_earth_instance.height + 15 + p2_shadow_instance.height + 20
+				top : 64 * globalRatio + p2_earth_el.height + 15 + p2_shadow_instance.height + 20
 			});
 		p3_footer_instance.setOpacity(0);
 		setTimeout(function animate() {
