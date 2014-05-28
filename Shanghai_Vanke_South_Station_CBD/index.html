@@ -3,8 +3,10 @@
 <head>
 <title>徐汇万科中心</title>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;target-densitydpi=Medium-dpi">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="css/style.css">
 <style>
 </style>
@@ -13,56 +15,79 @@
 </head>
 <body onload="init()">
 <div id="container">
-<canvas id="canvas" width="640" height="960">当前浏览器不支持HTML5 Canvas，请更换您的浏览器 </canvas>
+<canvas id="canvas">当前浏览器不支持HTML5 Canvas，请更换您的浏览器 </canvas>
 <script src="js/main.debug.js"></script>
 <script src="js/ball.js"></script>
-<script src="js/pyramid.js"></script>
+<script src="js/area.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/random.js"></script>
 <script src="js/steps.js"></script>
 <script src="lib/fabric.min.js"></script>
 
-<img id="p1-bg" src="images/p1-bg.jpg" style="display:none;"></img>
-<img id="p1-header" src="images/p1-header.png" style="display:none;"></img>
-<img id="p1-footer" src="images/p1-footer.png" style="display:none;"></img>
-<img id="p2-earth" src="images/p2-earth.png" style="display:none;"></img>
-<img id="p3-footer" src="images/p3-footer.png" style="display:none;"></img>
+<img id="p1-bg" src="images/320x480/p1-bg.png" style="display:none;"></img>
+<img id="p1-header" src="images/320x480/p1-header.png" style="display:none;"></img>
+<img id="p1-footer" src="images/320x480/p1-footer.png" style="display:none;"></img>
+<img id="p2-earth" src="images/320x480/p2-earth.png" style="display:none;"></img>
+<img id="p3-footer" src="images/320x480/p3-footer.png" style="display:none;"></img>
 
-<img id="p5-pyramid" src="images/p5-pyramid.png" style="display:none;"></img>
-<img id="p5-side" src="images/p5-side.png" style="display:none;"></img>
-<img id="p5-body" src="images/p5-body.png" style="display:none;"></img>
-<img id="p5-footer" src="images/p5-footer.png" style="display:none;"></img>
+<img id="p5-pyramid" src="images/320x480/p5-pyramid.png" style="display:none;"></img>
+<img id="p5-side" src="images/320x480/p5-side.png" style="display:none;"></img>
+<img id="p5-body" src="images/320x480/p5-body.png" style="display:none;"></img>
+<img id="p5-footer" src="images/320x480/p5-footer.png" style="display:none;"></img>
 
-<img id="shadow" src="images/shadow.png" style="display:none;"></img>
-<!-->balls</!-->
+<img id="p7-greatwall" src="images/320x480/p7-greatwall.png" style="display:none;"></img>
+<img id="p7-header" src="images/320x480/p7-header.png" style="display:none;"></img>
+<img id="p7-header2" src="images/320x480/p7-header2.png" style="display:none;"></img>
+<img id="p7-footer" src="images/320x480/p7-footer.png" style="display:none;"></img>
+
+<img id="p9-soh" src="images/320x480/p9-soh.png" style="display:none;"></img>
+<img id="p9-header" src="images/320x480/p9-header.png" style="display:none;"></img>
+<img id="p9-footer" src="images/320x480/p9-footer.png" style="display:none;"></img>
+<img id="p9-footer2" src="images/320x480/p9-footer2.png" style="display:none;"></img>
+
+<img id="p11-opt" src="images/320x480/p11-opt.png" style="display:none;"></img>
+<img id="p11-header" src="images/320x480/p11-header.png" style="display:none;"></img>
+<img id="p11-header2" src="images/320x480/p11-header2.png" style="display:none;"></img>
+<img id="p11-side" src="images/320x480/p11-side.png" style="display:none;"></img>
+
+<img id="shadow" src="images/320x480/shadow.png" style="display:none;"></img>
+
+<img id="red-20" src="images/ball/red-20.png" style="display:none;"></img>
 <img id="red-40" src="images/ball/red-40.png" style="display:none;"></img>
 <img id="red-80" src="images/ball/red-80.png" style="display:none;"></img>
 <img id="red-160" src="images/ball/red-160.png" style="display:none;"></img>
 
+<img id="yellow-20" src="images/ball/yellow-20.png" style="display:none;"></img>
 <img id="yellow-40" src="images/ball/yellow-40.png" style="display:none;"></img>
 <img id="yellow-80" src="images/ball/yellow-80.png" style="display:none;"></img>
 <img id="yellow-160" src="images/ball/yellow-160.png" style="display:none;"></img>
 
+<img id="black-20" src="images/ball/black-20.png" style="display:none;"></img>
 <img id="black-40" src="images/ball/black-40.png" style="display:none;"></img>
 <img id="black-80" src="images/ball/black-80.png" style="display:none;"></img>
 <img id="black-160" src="images/ball/black-160.png" style="display:none;"></img>
 
+<img id="green-light-20" src="images/ball/green-light-20.png" style="display:none;"></img>
 <img id="green-light-40" src="images/ball/green-light-40.png" style="display:none;"></img>
 <img id="green-light-80" src="images/ball/green-light-80.png" style="display:none;"></img>
 <img id="green-light-160" src="images/ball/green-light-160.png" style="display:none;"></img>
 
+<img id="green-20" src="images/ball/green-20.png" style="display:none;"></img>
 <img id="green-40" src="images/ball/green-40.png" style="display:none;"></img>
 <img id="green-80" src="images/ball/green-80.png" style="display:none;"></img>
 <img id="green-160" src="images/ball/green-160.png" style="display:none;"></img>
 
+<img id="blue-20" src="images/ball/blue-20.png" style="display:none;"></img>
 <img id="blue-40" src="images/ball/blue-40.png" style="display:none;"></img>
 <img id="blue-80" src="images/ball/blue-80.png" style="display:none;"></img>
 <img id="blue-160" src="images/ball/blue-160.png" style="display:none;"></img>
 
+<img id="dark-20" src="images/ball/dark-20.png" style="display:none;"></img>
 <img id="dark-40" src="images/ball/dark-40.png" style="display:none;"></img>
 <img id="dark-80" src="images/ball/dark-80.png" style="display:none;"></img>
 <img id="dark-160" src="images/ball/dark-160.png" style="display:none;"></img>
 
+<img id="gray-20" src="images/ball/gray-20.png" style="display:none;"></img>
 <img id="gray-40" src="images/ball/gray-40.png" style="display:none;"></img>
 <img id="gray-80" src="images/ball/gray-80.png" style="display:none;"></img>
 <img id="gray-160" src="images/ball/gray-160.png" style="display:none;"></img>
