@@ -15,7 +15,7 @@
 		
 		var frameFreshTime = 20;
 		var slideElFadeOutPace = 100;
-		var slideElFadeOutThreshold = slideElFadeOpacityInterval = 0.02;
+		var slideElFadeOutThreshold = oInterval = 0.02;
 		var slideElFadeInThreshold = 1 - slideElFadeOutThreshold;
 		
 		var easeDuration = 2000;
@@ -59,24 +59,26 @@
 		});
 		// fadeOutAndRemove p1_header 
 		var p1_fadeOutTime = 3000;
-		setTimeout(function animate() {
-			if (p1_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p1_header_instance);	
-				return;
-			}
-			p1_header_instance.setOpacity(p1_header_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p1_fadeOutTime);
-		setTimeout(function animate() {
-			if (p1_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p1_footer_instance);	
-				return;
-			}
-			p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p1_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p1_header_instance, oInterval, frameFreshTime), p1_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p1_footer_instance, oInterval, frameFreshTime), p1_fadeOutTime);
+		// setTimeout(function animate() {
+		// 	if (p1_header_instance.getOpacity() <= slideElFadeOutThreshold) {
+		// 		fcanvas.remove(p1_header_instance);	
+		// 		return;
+		// 	}
+		// 	p1_header_instance.setOpacity(p1_header_instance.getOpacity() - oInterval);
+		// 	fcanvas.renderAll();
+		// 	setTimeout(animate, frameFreshTime);
+		// }, p1_fadeOutTime);
+		// setTimeout(function animate() {
+		// 	if (p1_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
+		// 		fcanvas.remove(p1_footer_instance);	
+		// 		return;
+		// 	}
+		// 	p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - oInterval);
+		// 	fcanvas.renderAll();
+		// 	setTimeout(animate, frameFreshTime);
+		// }, p1_fadeOutTime);
 		
 		// resize to prepare p2
 		// resize to earth
@@ -115,15 +117,7 @@
 		// setTimeout(function animate() {
 		// 	fcanvas.add(p2_shadow_instance);
 		// }, 9000);
-		setTimeout(function animate() {
-			if (p2_shadow_instance.getOpacity >= slideElFadeInThreshold) {
-				p2_shadow_instance.setOpacity(1);
-				return;
-			}
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, 9800);
+		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), 9800);
 		/**************** end p2 ****************/
 		
 		/*************** start p3 ***************/
@@ -136,49 +130,14 @@
 		setTimeout(function animate() {
 			fcanvas.add(p3_footer_instance);
 		}, 10000);
-		setTimeout(function animate() {
-			if (p3_footer_instance.getOpacity() >= slideElFadeInThreshold) {
-				p3_footer_instance.setOpacity(1);
-				fcanvas.renderAll();
-				return;
-			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, 10800);
+		setTimeout(animateFadeInAndDisplay(p3_footer_instance, oInterval, frameFreshTime), 10800);
 		// fade out earth and fade in balls
 		// fadeOutAndRemove p2_earth 
 		var earthFadeOutTime = 12000;
-		setTimeout(function animate() {
-			if (p2_earth_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p2_earth_instance);	
-				return;
-			}
-			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, earthFadeOutTime);
-		
-		// fadeOut footer and explode
-		setTimeout(function animate() {
-			if (p3_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p3_footer_instance);	
-				fcanvas.remove(p2_shadow_instance);
-				// fixme dirty solution to double num of balls;
-				// redNum = redNum * 2;
-				// yellowNum = yellowNum * 2;
-				// blackNum = blackNum * 2;
-				// grayNum = grayNum * 2;
-				// greenLightNum = greenLightNum * 2;
-				// greenNum = greenNum * 2;
-				// blueNum = blueNum * 2;
-				return;
-			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() - slideElFadeOpacityInterval);
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, earthFadeOutTime);
+		// fadeOut footer 
+		setTimeout(animateFadeOutAndRemove(p2_earth_instance, oInterval, frameFreshTime), earthFadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p2_shadow_instance, oInterval, frameFreshTime), earthFadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p3_footer_instance, oInterval, frameFreshTime), earthFadeOutTime);
 		/**************** end p3 ****************/
 		
 		/*************** start p4 ***************/
@@ -289,14 +248,7 @@
 			});
 		fcanvas.add(p5_pyramid_instance);
 		// fadeIn pyramid
-		setTimeout(function animate() {
-			if (p5_pyramid_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p5_startTime + 5000);
+		setTimeout(animateFadeInAndDisplay(p5_pyramid_instance, oInterval, frameFreshTime), p5_startTime + 5000);
 		var explode = false;
 		// move the ball and fade out
 		setTimeout(function animate() {
@@ -329,14 +281,7 @@
 		fcanvas.add(p5_side_instance);
 		// fadeIn side
 		var p5_renderingTime = p5_startTime + 5000;
-		setTimeout(function animate() {
-			if (p5_side_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p5_side_instance.setOpacity(p5_side_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p5_renderingTime);
+		setTimeout(animateFadeInAndDisplay(p5_side_instance, oInterval, frameFreshTime), p5_renderingTime);
 		// add body 
 		var p5_body_el = getId("p5-body");
 		var p5_body_instance = new fabric.Image(p5_body_el, {
@@ -372,42 +317,11 @@
 		}, p5_renderingTime + 100);		
 		// fadeOut pyramid and remove 		
 		var p5_fadeOutTime = p5_startTime + 20000;
-		setTimeout(function animate() {
-			if (p5_pyramid_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p5_pyramid_instance);	
-				return;
-			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p5_fadeOutTime);
-		setTimeout(function animate() {
-			if (p5_side_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p5_side_instance);	
-				return;
-			}
-			p5_side_instance.setOpacity(p5_side_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p5_fadeOutTime);
-		setTimeout(function animate() {
-			if (p5_body_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p5_body_instance);	
-				return;
-			}
-			p5_body_instance.setOpacity(p5_body_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p5_fadeOutTime);
-		setTimeout(function animate() {
-			if (p5_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p5_footer_instance);	
-				return;
-			}
-			p5_footer_instance.setOpacity(p5_footer_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p5_fadeOutTime);		
+		setTimeout(animateFadeOutAndRemove(p5_pyramid_instance, oInterval, frameFreshTime), p5_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p5_side_instance, oInterval, frameFreshTime), p5_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p5_body_instance, oInterval, frameFreshTime), p5_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p5_footer_instance, oInterval, frameFreshTime), p5_fadeOutTime);
+		
 		/**************** end p5 ****************/
 		/****************************************/
 		/*************** start p6 ***************/		
@@ -448,14 +362,7 @@
 		});		
 		fcanvas.add(p7_header_instance);		
 		// fadeIn header
-		setTimeout(function animate() {
-			if (p7_header_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p7_header_instance.setOpacity(p7_header_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p7_startTime + 13000);		
+		setTimeout(animateFadeInAndDisplay(p7_header_instance, oInterval, frameFreshTime), p7_startTime + 13000);
 		// add greatwall		
 		var p7_greatwall_el = getId("p7-greatwall");
 		
@@ -495,14 +402,8 @@
 			}); // reset for future new target
 			// force = force * 2; // reset force 
 		}, p7_startTime - 100);		
-		setTimeout(function animate() {
-			if (p7_greatwall_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p7_startTime + 10000);
+		setTimeout(animateFadeInAndDisplay(p7_greatwall_instance, oInterval, frameFreshTime), p7_startTime + 10000);
+		
 		setTimeout(function animate() {
 			// TODO return condition
 			if (explode) {
@@ -556,42 +457,11 @@
 		}, p7_startTime + 15000 + 100);
 		var p7_fadeOutTime = p7_startTime + 20000;
 		// fadeOut greatwall and remove 		
-		setTimeout(function animate() {
-			if (p7_greatwall_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p7_greatwall_instance);	
-				return;
-			}
-			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p7_fadeOutTime);
-		setTimeout(function animate() {
-			if (p7_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p7_header_instance);	
-				return;
-			}
-			p7_header_instance.setOpacity(p7_header_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p7_fadeOutTime);
-		setTimeout(function animate() {
-			if (p7_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p7_header2_instance);	
-				return;
-			}
-			p7_header2_instance.setOpacity(p7_header2_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p7_fadeOutTime);
-		setTimeout(function animate() {
-			if (p7_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p7_footer_instance);	
-				return;
-			}
-			p7_footer_instance.setOpacity(p7_footer_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p7_fadeOutTime);		
+		
+		setTimeout(animateFadeOutAndRemove(p7_greatwall_instance, oInterval, frameFreshTime), p7_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p7_header_instance, oInterval, frameFreshTime), p7_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p7_header2_instance, oInterval, frameFreshTime), p7_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p7_footer_instance, oInterval, frameFreshTime), p7_fadeOutTime);
 		/**************** end p7 ****************/
 		/****************************************/
 		/*************** start p8 ***************/
@@ -677,14 +547,8 @@
 			}); // reset for future new target
 			// force = force * 4; // reset force 
 		}, p9_startTime - 100);		
-		setTimeout(function animate() {
-			if (p9_operahouse_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p9_startTime + 10000);
+		setTimeout(animateFadeInAndDisplay(p9_operahouse_instance, oInterval, frameFreshTime), p9_startTime + 10000);
+		
 		setTimeout(function animate() {
 			// TODO return condition
 			if (explode) {
@@ -714,14 +578,8 @@
 		});
 		fcanvas.add(p9_footer_instance);	
 		// fadeIn footer
-		setTimeout(function animate() {
-			if (p9_footer_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p9_startTime + 13000);	
+		setTimeout(animateFadeInAndDisplay(p9_footer_instance, oInterval, frameFreshTime), p9_startTime + 13000);
+		
 		// add footer2  
 		var p9_footer2_el = getId("p9-footer2");
 		var p9_footer2_top = p9_footer_top + p9_footer_el.height + 20 * globalRatio;
@@ -740,43 +598,11 @@
 			});
 		}, p9_startTime + 15000 + 100);
 		var p9_fadeOutTime = p9_startTime + 20000;
-		// fadeOut greatwall and remove 		
-		setTimeout(function animate() {
-			if (p9_operahouse_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p9_operahouse_instance);	
-				return;
-			}
-			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p9_fadeOutTime);
-		setTimeout(function animate() {
-			if (p9_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p9_header_instance);	
-				return;
-			}
-			p9_header_instance.setOpacity(p9_header_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p9_fadeOutTime);
-		setTimeout(function animate() {
-			if (p9_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p9_footer_instance);	
-				return;
-			}
-			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p9_fadeOutTime);
-		setTimeout(function animate() {
-			if (p9_footer2_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p9_footer2_instance);	
-				return;
-			}
-			p9_footer2_instance.setOpacity(p9_footer2_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p9_fadeOutTime);		
+		// fadeOut greatwall and remove 	
+		setTimeout(animateFadeOutAndRemove(p9_operahouse_instance, oInterval, frameFreshTime), p9_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p9_header_instance, oInterval, frameFreshTime), p9_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p9_footer_instance, oInterval, frameFreshTime), p9_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p9_footer2_instance, oInterval, frameFreshTime), p9_fadeOutTime);
 		/**************** end p9 ****************/
 		/****************************************/
 		/*************** start p10 **************/
@@ -823,14 +649,7 @@
 		});
 		fcanvas.add(p11_side_instance);	
 		// fadeIn footer
-		setTimeout(function animate() {
-			if (p11_side_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p11_side_instance.setOpacity(p11_side_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p11_startTime + 13000);	
+		setTimeout(animateFadeInAndDisplay(p11_side_instance, oInterval, frameFreshTime), p11_startTime + 13000);
 		
 		var p11_header_el = getId('p11-header');
 		var p11_header_top =  p11_side_top + 80 * globalRatio;
@@ -887,14 +706,8 @@
 				b.targetPoint = undefined;
 			}); // reset for future new target			
 		}, p11_startTime - 100);		
-		setTimeout(function animate() {
-			if (p11_pearltower_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p11_startTime + 10000);
+		setTimeout(animateFadeInAndDisplay(p11_pearltower_instance, oInterval, frameFreshTime), p11_startTime + 10000);
+	
 		setTimeout(function animate() {
 			// TODO return condition
 			if (explode) {
@@ -932,42 +745,10 @@
 		}, p11_startTime + 15000 + 100);
 		var p11_fadeOutTime = p11_startTime + 20000;
 		// fadeOut pearl tower and remove 		
-		setTimeout(function animate() {
-			if (p11_pearltower_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p11_pearltower_instance);	
-				return;
-			}
-			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p11_fadeOutTime);
-		setTimeout(function animate() {
-			if (p11_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p11_header_instance);	
-				return;
-			}
-			p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p11_fadeOutTime);
-		setTimeout(function animate() {
-			if (p11_side_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p11_side_instance);	
-				return;
-			}
-			p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p11_fadeOutTime);
-		setTimeout(function animate() {
-			if (p11_header2_instance.getOpacity() <= slideElFadeOutThreshold) {
-				fcanvas.remove(p11_header2_instance);	
-				return;
-			}
-			p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, slideElFadeOutPace);
-		}, p11_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p11_pearltower_instance, oInterval, frameFreshTime), p11_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p11_header_instance, oInterval, frameFreshTime), p11_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p11_side_instance, oInterval, frameFreshTime), p11_fadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p11_header2_instance, oInterval, frameFreshTime), p11_fadeOutTime);
 		
 		/**************** end p11 ***************/
 		/****************************************/
@@ -988,14 +769,8 @@
 			top : 0
 		});			
 		fcanvas.add(p12_bg_instance);
-		setTimeout(function animate() {
-			if (p12_bg_instance.getOpacity() >= slideElFadeInThreshold) {
-				return;
-			}
-			p12_bg_instance.setOpacity(p12_bg_instance.getOpacity() + slideElFadeOpacityInterval);
-			fcanvas.renderAll();
-			setTimeout(animate, frameFreshTime);
-		}, p12_startTime);
+		setTimeout(animateFadeInAndDisplay(p12_bg_instance, oInterval, frameFreshTime), p12_startTime);
+		
 		// fadeOutAndRemove allBalls
 		setTimeout(function animate() {
 			allBalls.forEach(function (b) {
@@ -1010,15 +785,30 @@
 			return document.getElementById(id);
 		};	
 		
-		//function animateFadeOutAndRemove(instance, oInterval, inMillseconds) {
-		//	if (instance.opacity <= oInterval) {
-		//		fcanvas.remove(instance);	
-		//		return;
-		//	}
-		//	instance.opacity = instance.opacity - oInterval;
-		//	fcanvas.renderAll();
-		//	setTimeout(animateFadeOutAndRemove, inMillseconds);
-		//};
+		function animateFadeOutAndRemove(instance, oInterval, frameFreshInterval) {
+			return function animate() {
+				if (instance.opacity <= slideElFadeOutThreshold) {
+					fcanvas.remove(instance);	
+					return;
+				}
+				instance.opacity = instance.opacity - oInterval;
+				fcanvas.renderAll();
+				setTimeout(animate, frameFreshInterval);
+			};
+		};
+		
+		function animateFadeInAndDisplay(instance, oInterval, frameFreshInterval) {
+			return function animate() {
+				if (instance.opacity >= slideElFadeInThreshold) {
+					instance.setOpacity(1);	
+					return;
+				}
+				instance.opacity = instance.opacity + oInterval;
+				fcanvas.renderAll();
+				setTimeout(animate, frameFreshInterval);
+			};
+		};
+		
 		function removeAllBalls() {
 			allBalls.forEach(function (b) {
 					fcanvas.remove(b);
