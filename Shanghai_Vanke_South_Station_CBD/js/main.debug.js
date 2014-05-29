@@ -100,23 +100,7 @@
 
 		/*************** start p2 ***************/
 		var p2_earth_instance = p1_bg_instance;
-		// var p2_earth_instance = new fabric.Image(p2_earth_el, {
-		// 		opacity : 0,
-		// 		left : (fcanvas.width - p2_earth_el.width) / 2,  // 65, // fcanvas.width / 2 - p1_header_el.width / 2,
-		// 		top : 64 * globalRatio
-		// 	});
-		// setTimeout(function animate() {
-		// 	fcanvas.add(p2_earth_instance);
-		// }, 8000);
-		// setTimeout(function animate() {
-		// 	if (p2_earth_instance.getOpacity() >= 0.95) {
-		// 		return;
-		// 	}
-		// 	p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() + 0.05);
-		// 	fcanvas.renderAll();
-		// 	setTimeout(animate, 50);
-		// }, 8800);
-
+		
 		var p2_shadow_el = getId("shadow");
 		var p2_shadow_instance = new fabric.Image(p2_shadow_el, {
 				opacity : 0,
