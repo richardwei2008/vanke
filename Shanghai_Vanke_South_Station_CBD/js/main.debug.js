@@ -13,8 +13,9 @@
 		
 		var globalRatio = fcanvas.width * 1.0 / normalizedWidth;
 		
+		var frameFreshTime = 20;
 		var slideElFadeOutPace = 100;
-		var slideElFadeOutThreshold = slideElFadeOpacityPace = 0.05;
+		var slideElFadeOutThreshold = slideElFadeOpacityPace = 0.02;
 		var slideElFadeInThreshold = 1 - slideElFadeOutThreshold;
 		/*************** start p1 ***************/
 		var p1_bg_el = getId("p1-bg");
@@ -27,7 +28,7 @@
 				//}
 			});
 		fcanvas.add(p1_bg_instance);
-
+		
 		var p1_header_el = getId("p1-header");
 		var p1_header_top = 80 * globalRatio;
 		var p1_header_instance = new fabric.Image(p1_header_el, {
@@ -56,36 +57,46 @@
 			easing : fabric.util.ease.easeOutBounce
 		});
 		// fadeOutAndRemove p1_header 
+		var p1_fadeOutTime = 3000;
 		setTimeout(function animate() {
-			if (p1_header_instance.getOpacity() <= 0.05) {
+			if (p1_header_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p1_header_instance);	
 				return;
 			}
-			p1_header_instance.setOpacity(p1_header_instance.getOpacity() - 0.05);
+			p1_header_instance.setOpacity(p1_header_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 150);
-		}, 3000);
+			setTimeout(animate, frameFreshTime);
+		}, p1_fadeOutTime);
+		setTimeout(function animate() {
+			if (p1_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
+				fcanvas.remove(p1_footer_instance);	
+				return;
+			}
+			p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			fcanvas.renderAll();
+			setTimeout(animate, frameFreshTime);
+		}, p1_fadeOutTime);
 		
-		setTimeout(function () {
-			p1_footer_instance.animate('angle', '+=180', {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 3000
-			});
-			p1_footer_instance.animate('top', '+=90', {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 1000
-			});
-		}, 3000);
-
-		setTimeout(function () {
-			fcanvas.remove(p1_footer_instance);
-		}, 6000);
+		// setTimeout(function () {
+		// 	p1_footer_instance.animate('angle', '+=180', {
+		// 		onChange : fcanvas.renderAll.bind(fcanvas),
+		// 		duration : 3000
+		// 	});
+		// 	p1_footer_instance.animate('top', '+=90', {
+		// 		onChange : fcanvas.renderAll.bind(fcanvas),
+		// 		duration : 1000
+		// 	});
+		// }, 3000);
+        // 
+		// setTimeout(function () {
+		// 	fcanvas.remove(p1_footer_instance);
+		// }, 6000);
 
 		// resize to prepare p2
 		// resize to earth
 		var p2_earth_el = getId("p2-earth");
 		var resizeRatio = 0.02;
-		var earthShrinkPixel = 4;
+		var earthShrinkPixel = 2;
 		setTimeout(function animate() {
 			if (p1_bg_instance.width <= p2_earth_el.width) {
 				console.log("left: " + p1_bg_instance.left);
@@ -101,7 +112,7 @@
 			// p1_bg_instance.setScaleX(p1_bg_instance.getScaleX() - resizeRatio);
 			// p1_bg_instance.setScaleY(p1_bg_instance.getScaleY() - resizeRatio);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, 20);
 		}, 6000);
 		// clip to circle
 		//setTimeout(function animate() {
@@ -156,17 +167,22 @@
 
 		var p2_shadow_el = getId("shadow");
 		var p2_shadow_instance = new fabric.Image(p2_shadow_el, {
+				opacity : 0,
 				left : (fcanvas.width - p2_shadow_el.width) / 2, 	// 75, // fcanvas.width / 2 - p1_header_el.width / 2,
 				top : 64 * globalRatio + p2_earth_el.height + 15
 			});
-		p2_shadow_instance.setOpacity(0);
+		// p2_shadow_instance.setOpacity(0);
+		// setTimeout(function animate() {
+		// 	fcanvas.add(p2_shadow_instance);
+		// }, 9000);
 		setTimeout(function animate() {
-			fcanvas.add(p2_shadow_instance);
-		}, 9000);
-		setTimeout(function animate() {
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() + 0.05);
+			if (p2_shadow_instance.getOpacity >= slideElFadeInThreshold) {
+				p2_shadow_instance.setOpacity(1);
+				return;
+			}
+			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() + slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, 9800);
 		/**************** end p2 ****************/
 		
@@ -181,61 +197,58 @@
 			fcanvas.add(p3_footer_instance);
 		}, 10000);
 		setTimeout(function animate() {
-			if (p3_footer_instance.getOpacity() >= 0.95) {
+			if (p3_footer_instance.getOpacity() >= slideElFadeInThreshold) {
 				p3_footer_instance.setOpacity(1);
 				fcanvas.renderAll();
 				return;
 			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() + 0.05);
+			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() + slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, 10800);
-		setTimeout(function animate() {
-			p2_earth_instance.setOpacity(1);
-			return;
-		}, 12000);
 		// fade out earth and fade in balls
 		// fadeOutAndRemove p2_earth 
+		var earthFadeOutTime = 12000;
 		setTimeout(function animate() {
-			if (p2_earth_instance.getOpacity() <= 0.05) {
+			if (p2_earth_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p2_earth_instance);	
 				return;
 			}
-			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() - 0.05);
+			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 20);
-		}, 12000);
+			setTimeout(animate, frameFreshTime);
+		}, earthFadeOutTime);
 		
 		// fadeOut footer and explode
 		setTimeout(function animate() {
-			if (p3_footer_instance.getOpacity() <= 0.05) {
+			if (p3_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p3_footer_instance);	
 				fcanvas.remove(p2_shadow_instance);
 				// fixme dirty solution to double num of balls;
-				redNum = redNum * 2;
-				yellowNum = yellowNum * 2;
-				blackNum = blackNum * 2;
-				grayNum = grayNum * 2;
-				greenLightNum = greenLightNum * 2;
-				greenNum = greenNum * 2;
+				// redNum = redNum * 2;
+				// yellowNum = yellowNum * 2;
+				// blackNum = blackNum * 2;
+				// grayNum = grayNum * 2;
+				// greenLightNum = greenLightNum * 2;
+				// greenNum = greenNum * 2;
 				// blueNum = blueNum * 2;
 				return;
 			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() - 0.05);
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() - 0.05);
+			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() - slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 20);
-		}, 12000);
+			setTimeout(animate, frameFreshTime);
+		}, earthFadeOutTime);
 		/**************** end p3 ****************/
 		
 		/*************** start p4 ***************/
 		// add balls to the back of the earth while fade out 
-		var redNum = 19 		;//* 2;
-		var yellowNum = 7 		;//* 2;
-		var blackNum = 13 		;//* 2;
-		var grayNum = 1 		;//* 2;
-		var greenLightNum = 16 	;//* 2;
-		var greenNum = 14 		;//* 2;
+		var redNum = 19 		* 2;
+		var yellowNum = 7 		* 2;
+		var blackNum = 13 		* 2;
+		var grayNum = 1 		* 2;
+		var greenLightNum = 16 	* 2;
+		var greenNum = 14 		* 2;
 		var blueNum = 53 		;//* 2;
 		var totalNum = redNum + yellowNum + blackNum + grayNum + greenLightNum + greenNum + blueNum;
 		var redBalls = new Array(0);
@@ -246,22 +259,60 @@
 		var greenBalls = new Array(0);
 		var blueBalls = new Array(0);
 		var allBalls = new Array(0);
-		setTimeout(addBalls, 12000);
-		// will double balls for each kind except for blue ones
+		
+		setTimeout(addBalls, earthFadeOutTime - 2000);
+		// opacity
 		setTimeout(function animate() {
-			if (allBalls.length == totalNum * 2 - blueNum) {
-				console.log("Reach to maximum size");
+			if (Steps.P05_STARTED) {
+				console.log("Stop ball scale animation");
 				return;
 			}
-			addBallRandomly((fcanvas.width - 30 * globalRatio), (fcanvas.height - 40 * globalRatio)); // new frame to footer
-			setTimeout(animate, 10);
-		}, 14000); // time should be after earth is removed
+			allBalls.forEach(function (b) {
+				if (b.opacity < b.animOpactity) {
+					b.setOpacity(b.getOpacity() + 0.01);
+				} else {
+					b.setOpacity(b.animOpactity);					
+				}
+			});
+			fcanvas.renderAll();
+			setTimeout(animate, 20);
+		}, earthFadeOutTime);
+		
+		// scale 
+		setTimeout(function animate() {
+			if (Steps.P05_STARTED) {
+				console.log("Stop ball scale animation");
+				return;
+			}
+			allBalls.forEach(function (b) {				
+				animateBallScale(b);
+			});
+			fcanvas.renderAll();
+			setTimeout(animate, 50);
+			// fabric.util.requestAnimFrame(animate);
+		}, earthFadeOutTime);
+		// will double balls for each kind except for blue ones
+		// setTimeout(function animate() {
+		// 	if (allBalls.length == totalNum) {
+		// 		console.log("Reach to maximum size");
+		// 		return;
+		// 	}
+		// 	addBallRandomly((fcanvas.width - 30 * globalRatio), (fcanvas.height - 40 * globalRatio)); // new frame to footer
+		// 	setTimeout(animate, 10);
+		// }, 14000); // time should be after earth is removed
 		
 		// move the balls to pyramid position and fade out and remove them
 		/**************** end p4 ****************/
 		
 		/*************** start p5 ***************/
-		
+		var p5_startTime = 15000;
+		setTimeout(function p5_started() {
+			explode = false;
+			Steps.P05_STARTED = true;
+			allBalls.forEach(function (b) {
+				b.targetPoint = undefined;
+			}); 
+		}, p5_startTime - 100);		
 		// add pyramid
 		var p5_pyramid_el = getId("p5-pyramid");
 		
@@ -296,13 +347,13 @@
 		fcanvas.add(p5_pyramid_instance);
 		// fadeIn pyramid
 		setTimeout(function animate() {
-			if (p5_pyramid_instance.getOpacity() >= 0.95) {
+			if (p5_pyramid_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + 0.05);
+			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + slideElFadeOpacityPace);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
-		}, 20000);
+			setTimeout(animate, frameFreshTime);
+		}, p5_startTime + 5000);
 		var explode = false;
 		// move the ball and fade out
 		setTimeout(function animate() {
@@ -310,7 +361,7 @@
 			if (explode) {
 				return;
 			}
-			if (allBalls.length == totalNum * 2 - blueNum) {
+			if (allBalls.length == totalNum) {
 				allBalls.forEach(function (b) {
 					if (b.targetPoint === undefined) {
 						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
@@ -321,7 +372,7 @@
 				fcanvas.renderAll();
 			}
 			setTimeout(animate, 100);
-		}, 15000);
+		}, p5_startTime);
 		
 		// add side font 		
 		var p5_side_el = getId("p5-side");
@@ -334,6 +385,7 @@
 			});
 		fcanvas.add(p5_side_instance);
 		// fadeIn side
+		var p5_renderingTime = p5_startTime + 5000;
 		setTimeout(function animate() {
 			if (p5_side_instance.getOpacity() >= 0.95) {
 				return;
@@ -341,7 +393,7 @@
 			p5_side_instance.setOpacity(p5_side_instance.getOpacity() + 0.05);
 			fcanvas.renderAll();
 			setTimeout(animate, 50);
-		}, 25000);
+		}, p5_renderingTime);
 		// add body 
 		var p5_body_el = getId("p5-body");
 		var p5_body_instance = new fabric.Image(p5_body_el, {
@@ -357,7 +409,7 @@
 				duration : 2000,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, 25100);
+		}, p5_renderingTime + 100);
 		// add footer
 		var p5_footer_el = getId("p5-footer");
 		var p5_footer_top = p5_side_top + p5_side_el.height - p5_footer_el.height - 10 * globalRatio;
@@ -374,9 +426,9 @@
 				duration : 2000,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, 25500);		
+		}, p5_renderingTime + 100);		
 		// fadeOut pyramid and remove 		
-		var p5_fadeOutTime = 35000;
+		var p5_fadeOutTime = p5_startTime + 20000;
 		setTimeout(function animate() {
 			if (p5_pyramid_instance.getOpacity() <= slideElFadeOutThreshold) {
 				fcanvas.remove(p5_pyramid_instance);	
@@ -417,12 +469,13 @@
 		/****************************************/
 		/*************** start p6 ***************/		
 		// explode 
+		var p6_explodeTime = p5_fadeOutTime + 100;
 		setTimeout(function resetExploded() {
 			explode = true;
 			allBalls.forEach(function (b) {
 				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
 			});
-		}, 35000);
+		}, p6_explodeTime);
 		setTimeout(function animate() {
 			if (Steps.P07_STARTED) {
 				return;
@@ -434,12 +487,12 @@
 				fcanvas.renderAll();
 			}
 			setTimeout(animate, 100);
-		}, 35000);
+		}, p6_explodeTime);
 		/**************** end p6 ****************/
 		/****************************************/
 		/*************** start p7 ***************/
 		// remove all
-		var p7_startTime = 40000;
+		var p7_startTime = p6_explodeTime + 5000;
 		// setTimeout(removeAllBalls, p7_startTime);
 		
 		var p7_header_el = getId('p7-header');
@@ -512,7 +565,7 @@
 			if (explode) {
 				return;
 			}
-			if (allBalls.length == totalNum * 2 - blueNum) {
+			if (allBalls.length == totalNum) {
 				allBalls.forEach(function (b) {
 					if (b.targetPoint === undefined) {
 						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
@@ -600,7 +653,7 @@
 		/****************************************/
 		/*************** start p8 ***************/
 		// explode 
-		var p8_explodeTime = p7_fadeOutTime;
+		var p8_explodeTime = p7_fadeOutTime + 100;
 		setTimeout(function resetExploded() {
 			explode = true;
 			allBalls.forEach(function (b) {
@@ -694,7 +747,7 @@
 			if (explode) {
 				return;
 			}
-			if (allBalls.length == totalNum * 2 - blueNum) {
+			if (allBalls.length == totalNum) {
 				allBalls.forEach(function (b) {
 					if (b.targetPoint === undefined) {
 						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
@@ -784,7 +837,7 @@
 		/**************** end p9 ****************/
 		/****************************************/
 		/*************** start p10 **************/
-		var p10_explodeTime = p9_fadeOutTime;
+		var p10_explodeTime = p9_fadeOutTime + 100;
 		setTimeout(function resetExploded() {
 			explode = true;
 			allBalls.forEach(function (b) {
@@ -904,7 +957,7 @@
 			if (explode) {
 				return;
 			}
-			if (allBalls.length == totalNum * 2 - blueNum) {
+			if (allBalls.length == totalNum) {
 				allBalls.forEach(function (b) {
 					if (b.targetPoint === undefined) {
 						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
@@ -1032,21 +1085,8 @@
 		
 		function addBalls(topFrameFrom, topFrameTo) {
 			while (allBalls.length != totalNum) {
-				addBallRandomly();
+				addBallRandomly(0); // opacity
 			}
-			setTimeout(function animate() {
-				if (allBalls.length == totalNum * 2 - blueNum) {
-					console.log("All balls rendered. Stop animate to move them");
-					return;
-				}
-				allBalls.forEach(function (b) {
-					animateBallScale(b);
-				});
-				fcanvas.renderAll();
-				setTimeout(animate, 50);
-				// fabric.util.requestAnimFrame(animate);
-
-			}, 10);
 			// randomLayoutBalls(redBalls, redNum, BallColorType.RED);
 			// randomLayoutBalls(yellowBalls, yellowNum, BallColorType.YELLOW);
 			// randomLayoutBalls(blackBalls, blackNum, BallColorType.BLACK);
@@ -1057,29 +1097,29 @@
 			// fcanvas.renderAll();
 		};
 		
-		function addBallRandomly(topFrameFrom, topFrameTo) {
+		function addBallRandomly(opacity, topFrameFrom, topFrameTo) {
 			var slot = utils.random.getRandomInt(0, 6);
 			switch (slot) {
 					case 0:
-						tryToAddBall(fcanvas, redBalls, redNum, allBalls, BallColorType.RED, '', topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, redBalls, redNum, allBalls, BallColorType.RED, '', opacity, topFrameFrom, topFrameTo);
 						break;
 					case 1:
-						tryToAddBall(fcanvas, yellowBalls, yellowNum, allBalls, BallColorType.YELLOW, '', topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, yellowBalls, yellowNum, allBalls, BallColorType.YELLOW, '', opacity, topFrameFrom, topFrameTo);
 						break;
 					case 2:
-						tryToAddBall(fcanvas, blackBalls, blackNum, allBalls, BallColorType.BLACK, '', topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, blackBalls, blackNum, allBalls, BallColorType.BLACK, '', opacity, topFrameFrom, topFrameTo);
 						break;
 					case 3:
-						tryToAddBall(fcanvas, grayBalls, grayNum, allBalls, BallColorType.GRAY, '', topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, grayBalls, grayNum, allBalls, BallColorType.GRAY, '', opacity, topFrameFrom, topFrameTo);
 						break;
 					case 4:
-						tryToAddBall(fcanvas, greenLightBalls, greenLightNum, allBalls, BallColorType.GREEN, BallStyle.LIGHT, topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, greenLightBalls, greenLightNum, allBalls, BallColorType.GREEN, BallStyle.LIGHT, opacity, topFrameFrom, topFrameTo);
 						break;
 					case 5:
-						tryToAddBall(fcanvas, greenBalls, greenNum, allBalls, BallColorType.GREEN, '', topFrameFrom, topFrameTo);
+						tryToAddBall(fcanvas, greenBalls, greenNum, allBalls, BallColorType.GREEN, '', opacity, topFrameFrom, topFrameTo);
 						break;
 					case 6:
-						tryToAddBall(fcanvas, blueBalls, blueNum, allBalls, BallColorType.BLUE, '');
+						tryToAddBall(fcanvas, blueBalls, blueNum, allBalls, BallColorType.BLUE, '', opacity);
 						break;	
 					default:
 						var msg = "Unsupported ball style: " + slot;
@@ -1210,11 +1250,11 @@
 			b.top += b.vy;
 		};
 		
-		function tryToAddBall(c, array, limit, globalArray, colorType, style, topFrameFrom, topFrameTo) {
+		function tryToAddBall(c, array, limit, globalArray, colorType, style, opacity, topFrameFrom, topFrameTo) {
 			if (array.length > limit) {
 				return false;
 			}
-			var theBall = randomBall(colorType, style, topFrameFrom, topFrameTo);
+			var theBall = randomBall(colorType, style, opacity, topFrameFrom, topFrameTo);
 			array.push(theBall);
 			globalArray.push(theBall);
 			fcanvas.add(theBall);
@@ -1223,7 +1263,7 @@
 			return theBall;
 		};
 				
-		function randomBall(colorType, style, topFrameFrom, topFrameTo) {
+		function randomBall(colorType, style, opacity, topFrameFrom, topFrameTo) {
 			if (topFrameFrom == undefined) {
 				topFrameFrom = 75 * globalRatio;
 			}
@@ -1232,7 +1272,7 @@
 			}
 			// random access ball size 			
 			var ballSizeIndex = utils.random.getRandomInt(0, 2);
-			if (fcanvas.width >= 320) {
+			if (fcanvas.width > 320) {
 				ballSizeIndex = utils.random.getRandomInt(1, 3);
 			}
 			var theBall = makeBall(getBallEl(colorType, style,
@@ -1240,7 +1280,8 @@
 					),
 				utils.random.getRandomInt(60 * globalRatio, 600 * globalRatio), // left, 
 				utils.random.getRandomInt(topFrameFrom, topFrameTo), // top, 
-				utils.random.getRandomArbitrary(0.4, 0.9), // scale, 
+				opacity, 
+				utils.random.getRandomArbitrary(0.4, 0.9), // utils.random.getRandomArbitrary(0.2, 0.8),  // scale, 
 				utils.random.getRandomInt(0, 360) // angle
 				);
 			return theBall;
@@ -1254,20 +1295,21 @@
 				var scale = utils.random.getRandomArbitrary(0.4, 0.9);
 				var angle = utils.random.getRandomInt(0, 360);
 				var ballSizeIndex = utils.random.getRandomInt(0, 2);
-				if (fcanvas.width >= 320) {
+				if (fcanvas.width > 320) {
 					ballSizeIndex = utils.random.getRandomInt(1, 3);
 				}
 				// var ballSizeIndex = utils.random.getRandomInt(0, 2);
 				// random access ball size 
 				var theBall = makeBall(getBallEl(colorType, style, BallSize[Object.keys(BallSize)[ballSizeIndex]]/* BallSize.SMALL */), 
-					left, top, scale, angle);
+					left, top, 1, scale, angle);
 				array[i] = theBall;
 				fcanvas.add(theBall);
 			}
 		};
 		
-		function makeBall(image_el, left, top, scale, angle) {
+		function makeBall(image_el, left, top, opacity, scale, angle) {
 			var _instance = new fabric.Image(image_el, {
+				opacity : opacity,
 				left : left, 
 				top : top,
 				vx : 0, 
@@ -1278,12 +1320,13 @@
 				originScaleY : scale,
 				animDirection : 'expand',
 				animInterval : 0.002,				
-				animAngle : 0.5,				
+				animAngle : 0.5,	
+				animOpactity : utils.random.getRandomArbitrary(0.8, 1.0),
 				angle : angle,
 				originAngle : angle				
 			});
 			_instance.set('selectable', false);
-			_instance.setOpacity(utils.random.getRandomArbitrary(0.8, 1.0));
+//			_instance.setOpacity(utils.random.getRandomArbitrary(0.8, 1.0)); FIXME animate to random opacity
 			return _instance;
 		};
 		
