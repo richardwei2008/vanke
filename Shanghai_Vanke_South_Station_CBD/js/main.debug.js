@@ -61,24 +61,6 @@
 		var p1_fadeOutTime = 3000;
 		setTimeout(animateFadeOutAndRemove(p1_header_instance, oInterval, frameFreshTime), p1_fadeOutTime);
 		setTimeout(animateFadeOutAndRemove(p1_footer_instance, oInterval, frameFreshTime), p1_fadeOutTime);
-		// setTimeout(function animate() {
-		// 	if (p1_header_instance.getOpacity() <= slideElFadeOutThreshold) {
-		// 		fcanvas.remove(p1_header_instance);	
-		// 		return;
-		// 	}
-		// 	p1_header_instance.setOpacity(p1_header_instance.getOpacity() - oInterval);
-		// 	fcanvas.renderAll();
-		// 	setTimeout(animate, frameFreshTime);
-		// }, p1_fadeOutTime);
-		// setTimeout(function animate() {
-		// 	if (p1_footer_instance.getOpacity() <= slideElFadeOutThreshold) {
-		// 		fcanvas.remove(p1_footer_instance);	
-		// 		return;
-		// 	}
-		// 	p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - oInterval);
-		// 	fcanvas.renderAll();
-		// 	setTimeout(animate, frameFreshTime);
-		// }, p1_fadeOutTime);
 		
 		// resize to prepare p2
 		// resize to earth
