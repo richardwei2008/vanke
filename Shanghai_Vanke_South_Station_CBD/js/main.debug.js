@@ -74,21 +74,6 @@
 			setTimeout(animate, frameFreshTime);
 		}, p1_fadeOutTime);
 		
-		// setTimeout(function () {
-		// 	p1_footer_instance.animate('angle', '+=180', {
-		// 		onChange : fcanvas.renderAll.bind(fcanvas),
-		// 		duration : 3000
-		// 	});
-		// 	p1_footer_instance.animate('top', '+=90', {
-		// 		onChange : fcanvas.renderAll.bind(fcanvas),
-		// 		duration : 1000
-		// 	});
-		// }, 3000);
-        // 
-		// setTimeout(function () {
-		// 	fcanvas.remove(p1_footer_instance);
-		// }, 6000);
-
 		// resize to prepare p2
 		// resize to earth
 		var p2_earth_el = getId("p2-earth");
