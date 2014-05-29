@@ -200,7 +200,10 @@
 		var blueBalls = new Array(0);
 		var allBalls = new Array(0);
 		
-		setTimeout(addBalls, earthFadeOutTime - 2000);
+		setTimeout(addBalls(allBalls, totalNum, 
+					p2_shadow_instance.top - p2_earth_el.height - 20 * globalRatio, 
+					p2_shadow_instance.top + 20 * globalRatio), 
+			earthFadeOutTime - 2000);
 		// opacity
 		setTimeout(function animate() {
 			if (Steps.P05_STARTED) {
@@ -1023,18 +1026,18 @@
 			fcanvas.renderAll();
 		};
 		
-		function addBalls(topFrameFrom, topFrameTo) {
-			while (allBalls.length != totalNum) {
-				addBallRandomly(0); // opacity
+		function addBalls(ballArray, limit, topFrameFrom, topFrameTo) {
+			// while (allBalls.length != totalNum) {
+			// 	addBallRandomly(0); // opacity
+			// }
+			return function() {
+				console.log("topFrameFrom: " + topFrameFrom);
+				console.log("topFrameTo: " + topFrameTo);
+				while (ballArray.length != limit) {
+					addBallRandomly(0, topFrameFrom, topFrameTo); // opacity
+				}
 			}
-			// randomLayoutBalls(redBalls, redNum, BallColorType.RED);
-			// randomLayoutBalls(yellowBalls, yellowNum, BallColorType.YELLOW);
-			// randomLayoutBalls(blackBalls, blackNum, BallColorType.BLACK);
-			// randomLayoutBalls(grayBalls, grayNum, BallColorType.GRAY);
-			// randomLayoutBalls(greenLightBalls, greenLightNum, BallColorType.GREEN, BallStyle.LIGHT);			
-			// randomLayoutBalls(greenBalls, greenNum, BallColorType.GREEN);
-			// randomLayoutBalls(blueBalls, blueNum, BallColorType.BLUE);			
-			// fcanvas.renderAll();
+			
 		};
 		
 		function addBallRandomly(opacity, topFrameFrom, topFrameTo) {
