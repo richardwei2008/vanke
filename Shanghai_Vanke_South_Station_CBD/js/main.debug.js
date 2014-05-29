@@ -23,9 +23,6 @@
 		var p1_bg_instance = new fabric.Image(p1_bg_el, {
 				left : - (p1_bg_el.width - fcanvas.width) / 2, // 0
 				top : - (p1_bg_el.height - fcanvas.height) / 2, // 0
-				//clipTo : function (ctx) {
-				//	ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
-				//}
 			});
 		fcanvas.add(p1_bg_instance);
 		
@@ -114,22 +111,6 @@
 			fcanvas.renderAll();
 			setTimeout(animate, 20);
 		}, 6000);
-		// clip to circle
-		//setTimeout(function animate() {
-		//	if (radius <= p2_earth_el.width / 2) {
-		//		return;
-		//	}
-		//	fabric.util.animate({
-		//		startValue : 500 * globalRatio, // Math.round(radius) === 300 ? 300 : 500,
-		//		endValue : p2_earth_el.width / 2, // * globalRatio, // Math.round(radius) === 300 ? 500 : 300,
-		//		duration : 2000,
-		//		onChange : function (value) {
-		//			radius = value;
-		//			fcanvas.renderAll();
-		//		},
-		//		onComplete : animate
-		//	});
-		//}, 7000);
 		// fadeOutAndRemove p1_bg
 		// setTimeout(function animate() {
 		// 	if (p1_bg_instance.getOpacity() <= 0.05) {
