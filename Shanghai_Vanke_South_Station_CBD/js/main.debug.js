@@ -111,20 +111,6 @@
 			fcanvas.renderAll();
 			setTimeout(animate, 20);
 		}, 6000);
-		// fadeOutAndRemove p1_bg
-		// setTimeout(function animate() {
-		// 	if (p1_bg_instance.getOpacity() <= 0.05) {
-		// 		fcanvas.remove(p1_bg_instance);	
-		// 		return;
-		// 	}
-		// 	p1_bg_instance.setOpacity(p1_bg_instance.getOpacity() - 0.05);
-		// 	fcanvas.renderAll();
-		// 	setTimeout(animate, 50);
-		// }, 8000);
-
-		// setTimeout(function () {
-		// 	fcanvas.remove(p1_bg_instance);
-		// }, 8800);
 		/**************** end p1 ****************/
 
 		/*************** start p2 ***************/
