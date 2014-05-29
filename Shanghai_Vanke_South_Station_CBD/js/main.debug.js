@@ -15,8 +15,12 @@
 		
 		var frameFreshTime = 20;
 		var slideElFadeOutPace = 100;
-		var slideElFadeOutThreshold = slideElFadeOpacityPace = 0.02;
+		var slideElFadeOutThreshold = slideElFadeOpacityInterval = 0.02;
 		var slideElFadeInThreshold = 1 - slideElFadeOutThreshold;
+		
+		var easeDuration = 2000;
+		var leftInPoint = 500;
+		var rightInPoint = 1000;
 		/*************** start p1 ***************/
 		var p1_bg_el = getId("p1-bg");
 		var radius = 1000 * globalRatio;		
@@ -29,14 +33,14 @@
 		var p1_header_el = getId("p1-header");
 		var p1_header_top = 80 * globalRatio;
 		var p1_header_instance = new fabric.Image(p1_header_el, {
-				left : 1000, // fcanvas.width / 2 - p1_header_el.width / 2,
+				left : rightInPoint, // fcanvas.width / 2 - p1_header_el.width / 2,
 				top : p1_header_top
 			});
 		fcanvas.add(p1_header_instance);
 		var p1_header_move_to_left = (fcanvas.width - p1_header_instance.width) / 2;
 		p1_header_instance.animate('left', p1_header_move_to_left, {
 			onChange : fcanvas.renderAll.bind(fcanvas),
-			duration : 2000,
+			duration : easeDuration,
 			easing : fabric.util.ease.easeOutBounce
 		});
 
@@ -50,7 +54,7 @@
 		var p1_footer_move_to_top = 750 * globalRatio;
 		p1_footer_instance.animate('top', p1_footer_move_to_top /* 750 */, {
 			onChange : fcanvas.renderAll.bind(fcanvas),
-			duration : 2000,
+			duration : easeDuration,
 			easing : fabric.util.ease.easeOutBounce
 		});
 		// fadeOutAndRemove p1_header 
@@ -60,7 +64,7 @@
 				fcanvas.remove(p1_header_instance);	
 				return;
 			}
-			p1_header_instance.setOpacity(p1_header_instance.getOpacity() - slideElFadeOpacityPace);
+			p1_header_instance.setOpacity(p1_header_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, p1_fadeOutTime);
@@ -69,7 +73,7 @@
 				fcanvas.remove(p1_footer_instance);	
 				return;
 			}
-			p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			p1_footer_instance.setOpacity(p1_footer_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, p1_fadeOutTime);
@@ -116,7 +120,7 @@
 				p2_shadow_instance.setOpacity(1);
 				return;
 			}
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() + slideElFadeOpacityPace);
+			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, 9800);
@@ -138,7 +142,7 @@
 				fcanvas.renderAll();
 				return;
 			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() + slideElFadeOpacityPace);
+			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, 10800);
@@ -150,7 +154,7 @@
 				fcanvas.remove(p2_earth_instance);	
 				return;
 			}
-			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() - slideElFadeOpacityPace);
+			p2_earth_instance.setOpacity(p2_earth_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, earthFadeOutTime);
@@ -170,8 +174,8 @@
 				// blueNum = blueNum * 2;
 				return;
 			}
-			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() - slideElFadeOpacityPace);
-			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() - slideElFadeOpacityPace);
+			p3_footer_instance.setOpacity(p3_footer_instance.getOpacity() - slideElFadeOpacityInterval);
+			p2_shadow_instance.setOpacity(p2_shadow_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, earthFadeOutTime);
@@ -286,7 +290,7 @@
 			if (p5_pyramid_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + slideElFadeOpacityPace);
+			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, frameFreshTime);
 		}, p5_startTime + 5000);
@@ -323,17 +327,17 @@
 		// fadeIn side
 		var p5_renderingTime = p5_startTime + 5000;
 		setTimeout(function animate() {
-			if (p5_side_instance.getOpacity() >= 0.95) {
+			if (p5_side_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p5_side_instance.setOpacity(p5_side_instance.getOpacity() + 0.05);
+			p5_side_instance.setOpacity(p5_side_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p5_renderingTime);
 		// add body 
 		var p5_body_el = getId("p5-body");
 		var p5_body_instance = new fabric.Image(p5_body_el, {
-				left : 1000,
+				left : rightInPoint,
 				top : p5_pyramid_top + p5_pyramid_instance.height + 20 * globalRatio
 			});
 		// easeOut body
@@ -342,7 +346,7 @@
 			fcanvas.add(p5_body_instance);
 			p5_body_instance.animate('left', p5_body_move_to_left /* 280 * globalRatio */, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p5_renderingTime + 100);
@@ -350,7 +354,7 @@
 		var p5_footer_el = getId("p5-footer");
 		var p5_footer_top = p5_side_top + p5_side_el.height - p5_footer_el.height - 10 * globalRatio;
 		var p5_footer_instance = new fabric.Image(p5_footer_el, {
-				left : 1000,
+				left : rightInPoint,
 				top : p5_footer_top
 			});
 		// easeOut footer
@@ -359,7 +363,7 @@
 			fcanvas.add(p5_footer_instance);
 			p5_footer_instance.animate('left', p5_footer_move_to_left, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p5_renderingTime + 100);		
@@ -370,7 +374,7 @@
 				fcanvas.remove(p5_pyramid_instance);	
 				return;
 			}
-			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() - slideElFadeOpacityPace);
+			p5_pyramid_instance.setOpacity(p5_pyramid_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p5_fadeOutTime);
@@ -379,7 +383,7 @@
 				fcanvas.remove(p5_side_instance);	
 				return;
 			}
-			p5_side_instance.setOpacity(p5_side_instance.getOpacity() - slideElFadeOpacityPace);
+			p5_side_instance.setOpacity(p5_side_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p5_fadeOutTime);
@@ -388,7 +392,7 @@
 				fcanvas.remove(p5_body_instance);	
 				return;
 			}
-			p5_body_instance.setOpacity(p5_body_instance.getOpacity() - slideElFadeOpacityPace);
+			p5_body_instance.setOpacity(p5_body_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p5_fadeOutTime);
@@ -397,7 +401,7 @@
 				fcanvas.remove(p5_footer_instance);	
 				return;
 			}
-			p5_footer_instance.setOpacity(p5_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			p5_footer_instance.setOpacity(p5_footer_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p5_fadeOutTime);		
@@ -442,12 +446,12 @@
 		fcanvas.add(p7_header_instance);		
 		// fadeIn header
 		setTimeout(function animate() {
-			if (p7_header_instance.getOpacity() >= 0.95) {
+			if (p7_header_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p7_header_instance.setOpacity(p7_header_instance.getOpacity() + 0.05);
+			p7_header_instance.setOpacity(p7_header_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p7_startTime + 13000);		
 		// add greatwall		
 		var p7_greatwall_el = getId("p7-greatwall");
@@ -489,12 +493,12 @@
 			// force = force * 2; // reset force 
 		}, p7_startTime - 100);		
 		setTimeout(function animate() {
-			if (p7_greatwall_instance.getOpacity() >= 0.95) {
+			if (p7_greatwall_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() + 0.05);
+			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p7_startTime + 10000);
 		setTimeout(function animate() {
 			// TODO return condition
@@ -517,7 +521,7 @@
 		// add header2  
 		var p7_header2_el = getId("p7-header2");
 		var p7_header2_instance = new fabric.Image(p7_header2_el, {
-			left : 1000,
+			left : rightInPoint,
 			top : p7_header_top + p7_header_instance.height + 20 * globalRatio
 		});
 		// easeOut header2
@@ -526,7 +530,7 @@
 			fcanvas.add(p7_header2_instance);
 			p7_header2_instance.animate('left', p7_header2_move_to_left, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p7_startTime + 15000 + 100);
@@ -534,7 +538,7 @@
 		var p7_footer_el = getId("p7-footer");
 		var p7_footer_top = p7_greatwall_top + p7_greatwall_el.height + 20 * globalRatio;
 		var p7_footer_instance = new fabric.Image(p7_footer_el, {
-			left : 1000,
+			left : rightInPoint,
 			top : p7_footer_top
 		});
 		// easeOut footer
@@ -543,7 +547,7 @@
 			fcanvas.add(p7_footer_instance);
 			p7_footer_instance.animate('left', p7_footer_move_to_left, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p7_startTime + 15000 + 100);
@@ -554,7 +558,7 @@
 				fcanvas.remove(p7_greatwall_instance);	
 				return;
 			}
-			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() - slideElFadeOpacityPace);
+			p7_greatwall_instance.setOpacity(p7_greatwall_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p7_fadeOutTime);
@@ -563,7 +567,7 @@
 				fcanvas.remove(p7_header_instance);	
 				return;
 			}
-			p7_header_instance.setOpacity(p7_header_instance.getOpacity() - slideElFadeOpacityPace);
+			p7_header_instance.setOpacity(p7_header_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p7_fadeOutTime);
@@ -572,7 +576,7 @@
 				fcanvas.remove(p7_header2_instance);	
 				return;
 			}
-			p7_header2_instance.setOpacity(p7_header2_instance.getOpacity() - slideElFadeOpacityPace);
+			p7_header2_instance.setOpacity(p7_header2_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p7_fadeOutTime);
@@ -581,7 +585,7 @@
 				fcanvas.remove(p7_footer_instance);	
 				return;
 			}
-			p7_footer_instance.setOpacity(p7_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			p7_footer_instance.setOpacity(p7_footer_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p7_fadeOutTime);		
@@ -617,7 +621,7 @@
 		var p9_header_el = getId('p9-header');
 		var p9_header_top =  p1_header_top + 20;
 		var p9_header_instance = new fabric.Image(p9_header_el, {
-			left : -500,
+			left : leftInPoint,
 			top : p9_header_top
 		});		
 		// easeOut header
@@ -626,7 +630,7 @@
 			fcanvas.add(p9_header_instance);
 			p9_header_instance.animate('left', p9_header_move_to_right, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p9_startTime + 15000 + 100);
@@ -671,12 +675,12 @@
 			// force = force * 4; // reset force 
 		}, p9_startTime - 100);		
 		setTimeout(function animate() {
-			if (p9_operahouse_instance.getOpacity() >= 0.95) {
+			if (p9_operahouse_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() + 0.05);
+			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p9_startTime + 10000);
 		setTimeout(function animate() {
 			// TODO return condition
@@ -708,18 +712,18 @@
 		fcanvas.add(p9_footer_instance);	
 		// fadeIn footer
 		setTimeout(function animate() {
-			if (p9_footer_instance.getOpacity() >= 0.95) {
+			if (p9_footer_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() + 0.05);
+			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p9_startTime + 13000);	
 		// add footer2  
 		var p9_footer2_el = getId("p9-footer2");
 		var p9_footer2_top = p9_footer_top + p9_footer_el.height + 20 * globalRatio;
 		var p9_footer2_instance = new fabric.Image(p9_footer2_el, {
-			left : -500,
+			left : leftInPoint,
 			top : p9_footer2_top
 		});
 		// easeOut footer2
@@ -728,7 +732,7 @@
 			fcanvas.add(p9_footer2_instance);
 			p9_footer2_instance.animate('left', p9_footer2_move_to_right, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p9_startTime + 15000 + 100);
@@ -739,7 +743,7 @@
 				fcanvas.remove(p9_operahouse_instance);	
 				return;
 			}
-			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() - slideElFadeOpacityPace);
+			p9_operahouse_instance.setOpacity(p9_operahouse_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p9_fadeOutTime);
@@ -748,7 +752,7 @@
 				fcanvas.remove(p9_header_instance);	
 				return;
 			}
-			p9_header_instance.setOpacity(p9_header_instance.getOpacity() - slideElFadeOpacityPace);
+			p9_header_instance.setOpacity(p9_header_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p9_fadeOutTime);
@@ -757,7 +761,7 @@
 				fcanvas.remove(p9_footer_instance);	
 				return;
 			}
-			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() - slideElFadeOpacityPace);
+			p9_footer_instance.setOpacity(p9_footer_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p9_fadeOutTime);
@@ -766,7 +770,7 @@
 				fcanvas.remove(p9_footer2_instance);	
 				return;
 			}
-			p9_footer2_instance.setOpacity(p9_footer2_instance.getOpacity() - slideElFadeOpacityPace);
+			p9_footer2_instance.setOpacity(p9_footer2_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p9_fadeOutTime);		
@@ -817,18 +821,18 @@
 		fcanvas.add(p11_side_instance);	
 		// fadeIn footer
 		setTimeout(function animate() {
-			if (p11_side_instance.getOpacity() >= 0.95) {
+			if (p11_side_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p11_side_instance.setOpacity(p11_side_instance.getOpacity() + 0.05);
+			p11_side_instance.setOpacity(p11_side_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p11_startTime + 13000);	
 		
 		var p11_header_el = getId('p11-header');
 		var p11_header_top =  p11_side_top + 80 * globalRatio;
 		var p11_header_instance = new fabric.Image(p11_header_el, {
-			left : -500,
+			left : leftInPoint,
 			top : p11_header_top
 		});			
 		// easeOut header
@@ -837,7 +841,7 @@
 			fcanvas.add(p11_header_instance);
 			p11_header_instance.animate('left', p11_header_move_to_right, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p11_startTime + 15000 + 100);
@@ -881,12 +885,12 @@
 			}); // reset for future new target			
 		}, p11_startTime - 100);		
 		setTimeout(function animate() {
-			if (p11_pearltower_instance.getOpacity() >= 0.95) {
+			if (p11_pearltower_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() + 0.05);
+			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p11_startTime + 10000);
 		setTimeout(function animate() {
 			// TODO return condition
@@ -910,7 +914,7 @@
 		var p11_header2_el = getId("p11-header2");
 		var p11_header2_top = p11_header_top - p11_header2_el.height - 20 * globalRatio;
 		var p11_header2_instance = new fabric.Image(p11_header2_el, {
-			left : -500,
+			left : leftInPoint,
 			top : p11_header2_top
 		});
 		// easeOut header2
@@ -919,7 +923,7 @@
 			fcanvas.add(p11_header2_instance);
 			p11_header2_instance.animate('left', p11_header2_move_to_right, {
 				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : 2000,
+				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
 		}, p11_startTime + 15000 + 100);
@@ -930,7 +934,7 @@
 				fcanvas.remove(p11_pearltower_instance);	
 				return;
 			}
-			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityPace);
+			p11_pearltower_instance.setOpacity(p11_pearltower_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p11_fadeOutTime);
@@ -939,7 +943,7 @@
 				fcanvas.remove(p11_header_instance);	
 				return;
 			}
-			p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityPace);
+			p11_header_instance.setOpacity(p11_header_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p11_fadeOutTime);
@@ -948,7 +952,7 @@
 				fcanvas.remove(p11_side_instance);	
 				return;
 			}
-			p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityPace);
+			p11_side_instance.setOpacity(p11_side_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p11_fadeOutTime);
@@ -957,7 +961,7 @@
 				fcanvas.remove(p11_header2_instance);	
 				return;
 			}
-			p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityPace);
+			p11_header2_instance.setOpacity(p11_header2_instance.getOpacity() - slideElFadeOpacityInterval);
 			fcanvas.renderAll();
 			setTimeout(animate, slideElFadeOutPace);
 		}, p11_fadeOutTime);
@@ -982,12 +986,12 @@
 		});			
 		fcanvas.add(p12_bg_instance);
 		setTimeout(function animate() {
-			if (p12_bg_instance.getOpacity() >= 0.95) {
+			if (p12_bg_instance.getOpacity() >= slideElFadeInThreshold) {
 				return;
 			}
-			p12_bg_instance.setOpacity(p12_bg_instance.getOpacity() + 0.05);
+			p12_bg_instance.setOpacity(p12_bg_instance.getOpacity() + slideElFadeOpacityInterval);
 			fcanvas.renderAll();
-			setTimeout(animate, 50);
+			setTimeout(animate, frameFreshTime);
 		}, p12_startTime);
 		// fadeOutAndRemove allBalls
 		setTimeout(function animate() {
@@ -1115,7 +1119,7 @@
 			// shrink
 			animateBallScale(b, 0.2);
 			// move to 
-			animateBallMove(b, target);
+			animateBallMoveWithForce(b, target);
 		};
 		
 		function animateBallScaleAndExplode(b, target) {
@@ -1124,7 +1128,7 @@
 			// fadeIn 
 			animateBallFadeIn(b);
 			// move to 
-			animateBallMove(b, target);
+			animateBallMoveWithForce(b, target);
 		};
 		
 		function randomizeBallTarget(index, areaL, areaC, areaR) {
@@ -1166,7 +1170,7 @@
 		
 		var force = 0.05;		
 		var speed = 1; // 1 pixel toward the target
-		function animateBallMove(b, target) {
+		function animateBallMoveWithForce(b, target) {
 			var dx = target.x - b.left;
             var dy = target.y - b.top;
 			if ((Math.abs(dx) <= 20 || Math.abs(dy) <= 20) && b.getOpacity() >= 0.05 && b.frozen) {
