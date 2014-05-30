@@ -69,8 +69,8 @@
 		var earthShrinkPixel = 2;
 		setTimeout(function animate() {
 			if (p1_bg_instance.width <= p2_earth_el.width) {
-				console.log("left: " + p1_bg_instance.left);
-				console.log("top: " + p1_bg_instance.top);
+				// console.log("left: " + p1_bg_instance.left);
+				// console.log("top: " + p1_bg_instance.top);
 				return;
 			}
 			// p1_bg_instance.top = p1_bg_instance.top + 7;
@@ -83,43 +83,39 @@
 			// p1_bg_instance.setScaleY(p1_bg_instance.getScaleY() - resizeRatio);
 			fcanvas.renderAll();
 			setTimeout(animate, 20);
-		}, 6000);
+		}, p1_fadeOutTime - 1000);
 		/**************** end p1 ****************/
 
 		/*************** start p2 ***************/
+		var p2_startTime = p1_fadeOutTime;
 		var p2_earth_instance = p1_bg_instance;
 		
 		var p2_shadow_el = getId("shadow");
 		var p2_shadow_instance = new fabric.Image(p2_shadow_el, {
 				opacity : 0,
 				left : (fcanvas.width - p2_shadow_el.width) / 2, 	// 75, // fcanvas.width / 2 - p1_header_el.width / 2,
-				top : 64 * globalRatio + p2_earth_el.height + 15
+				top : 64 * globalRatio + p2_earth_el.height + 20
 			});
-		// p2_shadow_instance.setOpacity(0);
-		// setTimeout(function animate() {
-		// 	fcanvas.add(p2_shadow_instance);
-		// }, 9000);
-		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), 9800);
+		fcanvas.add(p2_shadow_instance);
+		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), p2_startTime);
 		/**************** end p2 ****************/
 		
 		/*************** start p3 ***************/
 		var p3_footer_el = getId("p3-footer");
 		var p3_footer_instance = new fabric.Image(p3_footer_el, {
+				opacity : 0,
 				left : (fcanvas.width - p3_footer_el.width) / 2, // fcanvas.width / 2 - p1_header_el.width / 2,
 				top : 64 * globalRatio + p2_earth_el.height + 15 + p2_shadow_instance.height + 20
 			});
-		p3_footer_instance.setOpacity(0);
-		setTimeout(function animate() {
-			fcanvas.add(p3_footer_instance);
-		}, 10000);
-		setTimeout(animateFadeInAndDisplay(p3_footer_instance, oInterval, frameFreshTime), 10800);
+		fcanvas.add(p3_footer_instance);
+		setTimeout(animateFadeInAndDisplay(p3_footer_instance, oInterval, frameFreshTime), p2_startTime);
 		// fade out earth and fade in balls
 		// fadeOutAndRemove p2_earth 
-		var earthFadeOutTime = 12000;
+		var earthFadeOutTime = p2_startTime + 2000;
 		// fadeOut footer 
 		setTimeout(animateFadeOutAndRemove(p2_earth_instance, oInterval, frameFreshTime), earthFadeOutTime);
 		setTimeout(animateFadeOutAndRemove(p2_shadow_instance, oInterval, frameFreshTime), earthFadeOutTime);
-		setTimeout(animateFadeOutAndRemove(p3_footer_instance, oInterval, frameFreshTime), earthFadeOutTime);
+		setTimeout(animateFadeOutAndRemove(p3_footer_instance, oInterval, frameFreshTime), earthFadeOutTime + 4000);
 		/**************** end p3 ****************/
 		
 		/*************** start p4 ***************/
@@ -141,40 +137,15 @@
 		var blueBalls = new Array(0);
 		var allBalls = new Array(0);
 		
-		setTimeout(addBalls(allBalls, totalNum, 
+		setTimeout(addBalls(totalNum, 
 					p2_shadow_instance.top - p2_earth_el.height - 20 * globalRatio, 
 					p2_shadow_instance.top + 20 * globalRatio), 
-			earthFadeOutTime - 2000);
+			p1_fadeOutTime - 1000);	
 		// opacity
-		setTimeout(function animate() {
-			if (Steps.P05_STARTED) {
-				console.log("Stop ball scale animation");
-				return;
-			}
-			allBalls.forEach(function (b) {
-				if (b.opacity < b.animOpactity) {
-					b.setOpacity(b.getOpacity() + 0.01);
-				} else {
-					b.setOpacity(b.animOpactity);					
-				}
-			});
-			fcanvas.renderAll();
-			setTimeout(animate, 20);
-		}, earthFadeOutTime);
-		
+		setTimeout(animateAllBallOpacity('P05_STARTED'), earthFadeOutTime);
 		// scale 
-		setTimeout(function animate() {
-			if (Steps.P05_STARTED) {
-				console.log("Stop ball scale animation");
-				return;
-			}
-			allBalls.forEach(function (b) {				
-				animateBallScale(b);
-			});
-			fcanvas.renderAll();
-			setTimeout(animate, 50);
-			// fabric.util.requestAnimFrame(animate);
-		}, earthFadeOutTime);
+		setTimeout(animateAllBallScale('P05_STARTED'), earthFadeOutTime);
+		
 		// will double balls for each kind except for blue ones
 		// setTimeout(function animate() {
 		// 	if (allBalls.length == totalNum) {
@@ -230,27 +201,10 @@
 			});
 		fcanvas.add(p5_pyramid_instance);
 		// fadeIn pyramid
-		setTimeout(animateFadeInAndDisplay(p5_pyramid_instance, oInterval, frameFreshTime), p5_startTime + 5000);
+		setTimeout(animateFadeInAndDisplay(p5_pyramid_instance, oInterval, frameFreshTime), p5_startTime + 6000);
 		var explode = false;
 		// move the ball and fade out
-		setTimeout(function animate() {
-			// TODO return condition
-			if (explode) {
-				return;
-			}
-			if (allBalls.length == totalNum) {
-				allBalls.forEach(function (b) {
-					if (b.targetPoint === undefined) {
-						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
-							pyramidL, pyramidC, pyramidR); 
-					}
-					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p5_startTime);
-		
+		setTimeout(moveBallScaleAndFadeOut(pyramidL, pyramidC, pyramidR), p5_startTime);
 		// add side font 		
 		var p5_side_el = getId("p5-side");
 		var p5_side_left = 50 * globalRatio;
@@ -308,25 +262,17 @@
 		/****************************************/
 		/*************** start p6 ***************/		
 		// explode 
-		var p6_explodeTime = p5_fadeOutTime + 100;
-		setTimeout(function resetExploded() {
-			explode = true;
-			allBalls.forEach(function (b) {
-				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
-			});
-		}, p6_explodeTime);
-		setTimeout(function animate() {
-			if (Steps.P07_STARTED) {
-				return;
-			}
-			if (p5_footer_instance.getOpacity() <= 0.2) {
-				allBalls.forEach(function (b) {
-					animateBallScaleAndExplode(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p6_explodeTime);
+		var p6_explodeTime = p5_fadeOutTime + 100;		
+		// remove balls explode and move to pyramid
+		setTimeout(removeAllBalls, p6_explodeTime - 2500);
+		setTimeout(addBalls(totalNum, 
+					p5_pyramid_instance.top - 20 * globalRatio, 
+					p5_pyramid_instance.top + p5_pyramid_instance.height + 20 * globalRatio), 
+			p6_explodeTime - 2000);
+		// opacity
+		setTimeout(animateAllBallOpacity("P07_STARTED"), p5_fadeOutTime);
+		// scale 
+		setTimeout(animateAllBallScale("P07_STARTED"), p5_fadeOutTime);
 		/**************** end p6 ****************/
 		/****************************************/
 		/*************** start p7 ***************/
@@ -344,7 +290,7 @@
 		});		
 		fcanvas.add(p7_header_instance);		
 		// fadeIn header
-		setTimeout(animateFadeInAndDisplay(p7_header_instance, oInterval, frameFreshTime), p7_startTime + 13000);
+		setTimeout(animateFadeInAndDisplay(p7_header_instance, oInterval, frameFreshTime), p7_startTime + 10000);
 		// add greatwall		
 		var p7_greatwall_el = getId("p7-greatwall");
 		
@@ -384,26 +330,9 @@
 			}); // reset for future new target
 			// force = force * 2; // reset force 
 		}, p7_startTime - 100);		
-		setTimeout(animateFadeInAndDisplay(p7_greatwall_instance, oInterval, frameFreshTime), p7_startTime + 10000);
-		
-		setTimeout(function animate() {
-			// TODO return condition
-			if (explode) {
-				return;
-			}
-			if (allBalls.length == totalNum) {
-				allBalls.forEach(function (b) {
-					if (b.targetPoint === undefined) {
-						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
-							greatwallL, greatwallC, greatwallR); 
-					}
-					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p7_startTime);
-		
+		setTimeout(animateFadeInAndDisplay(p7_greatwall_instance, oInterval, frameFreshTime), p7_startTime + 6000);
+		// move the ball and fade out
+		setTimeout(moveBallScaleAndFadeOut(greatwallL, greatwallC, greatwallR), p7_startTime);
 		// add header2  
 		var p7_header2_el = getId("p7-header2");
 		var p7_header2_instance = new fabric.Image(p7_header2_el, {
@@ -419,7 +348,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p7_startTime + 15000 + 100);
+		}, p7_startTime + 10000 + 100);
 		// add footer  
 		var p7_footer_el = getId("p7-footer");
 		var p7_footer_top = p7_greatwall_top + p7_greatwall_el.height + 20 * globalRatio;
@@ -436,7 +365,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p7_startTime + 15000 + 100);
+		}, p7_startTime + 10000 + 100);
 		var p7_fadeOutTime = p7_startTime + 20000;
 		// fadeOut greatwall and remove 		
 		
@@ -449,24 +378,16 @@
 		/*************** start p8 ***************/
 		// explode 
 		var p8_explodeTime = p7_fadeOutTime + 100;
-		setTimeout(function resetExploded() {
-			explode = true;
-			allBalls.forEach(function (b) {
-				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
-			});
-		}, p8_explodeTime);
-		setTimeout(function animate() {
-			if (Steps.P09_STARTED) {
-				return;
-			}
-			if (p7_footer_instance.getOpacity() <= 0.2) {
-				allBalls.forEach(function (b) {
-					animateBallScaleAndExplode(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p8_explodeTime);
+		// remove balls explode and move to pyramid
+		setTimeout(removeAllBalls, p8_explodeTime - 2500);
+		setTimeout(addBalls(totalNum, 
+					p7_greatwall_instance.top - 20 * globalRatio, 
+					p7_greatwall_instance.top + p7_greatwall_instance.height + 20 * globalRatio), 
+			p8_explodeTime - 2000);
+		// opacity
+		setTimeout(animateAllBallOpacity("P09_STARTED"), p7_fadeOutTime);
+		// scale 
+		setTimeout(animateAllBallScale("P09_STARTED"), p7_fadeOutTime);
 		/**************** end p8 ****************/
 		/****************************************/
 		/*************** start p9 ***************/
@@ -488,7 +409,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p9_startTime + 15000 + 100);
+		}, p9_startTime + 10000 + 100);
 		
 		// add operahouse		
 		var p9_operahouse_el = getId("p9-soh");
@@ -529,26 +450,9 @@
 			}); // reset for future new target
 			// force = force * 4; // reset force 
 		}, p9_startTime - 100);		
-		setTimeout(animateFadeInAndDisplay(p9_operahouse_instance, oInterval, frameFreshTime), p9_startTime + 10000);
-		
-		setTimeout(function animate() {
-			// TODO return condition
-			if (explode) {
-				return;
-			}
-			if (allBalls.length == totalNum) {
-				allBalls.forEach(function (b) {
-					if (b.targetPoint === undefined) {
-						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
-							operahouseL, operahouseC, operahouseR); 
-					}
-					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p9_startTime);
-		
+		setTimeout(animateFadeInAndDisplay(p9_operahouse_instance, oInterval, frameFreshTime), p9_startTime + 6000);
+		setTimeout(moveBallScaleAndFadeOut(operahouseL, operahouseC, operahouseR), p9_startTime);
+				
 		// add footer  
 		var p9_footer_el = getId("p9-footer");
 		var p9_footer_left = (fcanvas.width - p9_footer_el.width)/2;
@@ -560,7 +464,7 @@
 		});
 		fcanvas.add(p9_footer_instance);	
 		// fadeIn footer
-		setTimeout(animateFadeInAndDisplay(p9_footer_instance, oInterval, frameFreshTime), p9_startTime + 13000);
+		setTimeout(animateFadeInAndDisplay(p9_footer_instance, oInterval, frameFreshTime), p9_startTime + 10000);
 		
 		// add footer2  
 		var p9_footer2_el = getId("p9-footer2");
@@ -578,7 +482,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p9_startTime + 15000 + 100);
+		}, p9_startTime + 10000 + 100);
 		var p9_fadeOutTime = p9_startTime + 20000;
 		// fadeOut greatwall and remove 	
 		setTimeout(animateFadeOutAndRemove(p9_operahouse_instance, oInterval, frameFreshTime), p9_fadeOutTime);
@@ -589,24 +493,15 @@
 		/****************************************/
 		/*************** start p10 **************/
 		var p10_explodeTime = p9_fadeOutTime + 100;
-		setTimeout(function resetExploded() {
-			explode = true;
-			allBalls.forEach(function (b) {
-				b.targetPoint = randomizeTarget(60 * globalRatio, 600 * globalRatio, 75 * globalRatio, 800 * globalRatio);
-			});
-		}, p10_explodeTime);
-		setTimeout(function animate() {
-			if (Steps.P11_STARTED) {
-				return;
-			}
-			if (p9_footer_instance.getOpacity() <= 0.2) {
-				allBalls.forEach(function (b) {
-					animateBallScaleAndExplode(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p10_explodeTime);
+		setTimeout(removeAllBalls, p10_explodeTime - 2500);
+		setTimeout(addBalls(totalNum, 
+					p9_operahouse_instance.top - 20 * globalRatio, 
+					p9_operahouse_instance.top + p9_operahouse_instance.height + 20 * globalRatio), 
+			p10_explodeTime - 2000);
+		// opacity
+		setTimeout(animateAllBallOpacity("P11_STARTED"), p9_fadeOutTime);
+		// scale 
+		setTimeout(animateAllBallScale("P11_STARTED"), p9_fadeOutTime);
 		/**************** end p10 ***************/
 		/****************************************/
 		/*************** start p11 **************/
@@ -631,7 +526,7 @@
 		});
 		fcanvas.add(p11_side_instance);	
 		// fadeIn footer
-		setTimeout(animateFadeInAndDisplay(p11_side_instance, oInterval, frameFreshTime), p11_startTime + 13000);
+		setTimeout(animateFadeInAndDisplay(p11_side_instance, oInterval, frameFreshTime), p11_startTime + 10000);
 		
 		var p11_header_el = getId('p11-header');
 		var p11_header_top =  p11_side_top + 80 * globalRatio;
@@ -648,7 +543,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p11_startTime + 15000 + 100);
+		}, p11_startTime + 10000 + 100);
 		
 		// add pearltower		
 		var p11_pearltower_el = getId("p11-opt");
@@ -679,35 +574,10 @@
 				left : p11_pearltower_left,
 				top : p11_pearltower_top
 			});
-		fcanvas.add(p11_pearltower_instance);
-		// fadeIn greatwall and move balls to great wall
-		setTimeout(function p11_started() {
-			explode = false;
-			Steps.P11_STARTED = true;
-			allBalls.forEach(function (b) {
-				b.targetPoint = undefined;
-			}); // reset for future new target			
-		}, p11_startTime - 100);		
-		setTimeout(animateFadeInAndDisplay(p11_pearltower_instance, oInterval, frameFreshTime), p11_startTime + 10000);
-	
-		setTimeout(function animate() {
-			// TODO return condition
-			if (explode) {
-				return;
-			}
-			if (allBalls.length == totalNum) {
-				allBalls.forEach(function (b) {
-					if (b.targetPoint === undefined) {
-						b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
-							pearltowerL, pearltowerC, pearltowerR); 
-					}
-					animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
-				});
-				fcanvas.renderAll();
-			}
-			setTimeout(animate, 100);
-		}, p11_startTime);
-				
+		fcanvas.add(p11_pearltower_instance); 	
+		setTimeout(animateFadeInAndDisplay(p11_pearltower_instance, oInterval, frameFreshTime), p11_startTime + 8000);
+		setTimeout(moveBallScaleAndFadeOut(pearltowerL, pearltowerC, pearltowerR), p11_startTime);
+					
 		// add header2  
 		var p11_header2_el = getId("p11-header2");
 		var p11_header2_top = p11_header_top - p11_header2_el.height - 20 * globalRatio;
@@ -724,7 +594,7 @@
 				duration : easeDuration,
 				easing : fabric.util.ease.easeOutCubic
 			});
-		}, p11_startTime + 15000 + 100);
+		}, p11_startTime + 10000 + 100);
 		var p11_fadeOutTime = p11_startTime + 20000;
 		// fadeOut pearl tower and remove 		
 		setTimeout(animateFadeOutAndRemove(p11_pearltower_instance, oInterval, frameFreshTime), p11_fadeOutTime);
@@ -792,24 +662,29 @@
 		};
 		
 		function removeAllBalls() {
+			explode = true;
 			allBalls.forEach(function (b) {
 					fcanvas.remove(b);
 			});
+			redBalls = new Array(0);
+			yellowBalls = new Array(0);
+			blackBalls = new Array(0);
+			grayBalls = new Array(0);
+			greenLightBalls = new Array(0);
+			greenBalls = new Array(0);
+			blueBalls = new Array(0);
+			allBalls = new Array(0);
 			fcanvas.renderAll();
 		};
 		
-		function addBalls(ballArray, limit, topFrameFrom, topFrameTo) {
-			// while (allBalls.length != totalNum) {
-			// 	addBallRandomly(0); // opacity
-			// }
+		function addBalls(limit, topFrameFrom, topFrameTo) {
 			return function() {
-				console.log("topFrameFrom: " + topFrameFrom);
-				console.log("topFrameTo: " + topFrameTo);
-				while (ballArray.length != limit) {
+				// console.log("topFrameFrom: " + topFrameFrom);
+				// console.log("topFrameTo: " + topFrameTo);
+				while (allBalls.length != limit) {
 					addBallRandomly(0, topFrameFrom, topFrameTo); // opacity
 				}
 			}
-			
 		};
 		
 		function addBallRandomly(opacity, topFrameFrom, topFrameTo) {
@@ -850,7 +725,7 @@
 			}
 			// var interval = 0.002;
 			if (b.animInterval < 0.02) {
-				b.animInterval += 0.0001;
+				b.animInterval += 0.00005;
 			}
 			if (b.getScaleX() >= b.originScaleX * ratio - 0.1 && b.getScaleX() <= b.originScaleX * ratio + 0.1) {
 				var actualInterval = (b.animDirection === 'expand' ? b.animInterval : -b.animInterval);
@@ -888,6 +763,71 @@
 			if (b.opacity <= 0.95) {
 				b.opacity = b.opacity + 0.05;
 			}
+		};
+		
+		function animateAllBallOpacity(step) {
+			return function animate() {
+				var stop = undefined;
+				if (stop === undefined) {
+					Object.keys(Steps).forEach(function (name) {
+						if (name == step) {
+							stop = Steps[name];
+						}
+					});
+				}
+				if (stop) {
+					// console.log(step + ": Stop ball scale animation");
+					return;
+				}
+				allBalls.forEach(function (b) {
+					if (b.opacity < b.animOpactity) {
+						b.setOpacity(b.getOpacity() + 0.01);
+					} else {
+						b.setOpacity(b.animOpactity);					
+					}
+				});
+				fcanvas.renderAll();
+				setTimeout(animate, 20);
+			}
+		};
+		function animateAllBallScale(step) {
+			return function animate(){
+				var stop = undefined;
+				if (stop === undefined) {
+					Object.keys(Steps).forEach(function(name) {
+						if (name == step) {
+							stop =  Steps[name];
+						}
+					}); 
+				}
+				if (stop) {
+					// console.log(step + ": Stop ball scale animation");
+					return;
+				}
+				allBalls.forEach(function (b) {				
+					animateBallScale(b);
+				});
+				fcanvas.renderAll();
+				setTimeout(animate, 50);
+			};
+		};
+		function moveBallScaleAndFadeOut(areaL, areC, areR) {
+			return function animate() {
+				if (explode) {
+					return;
+				}
+				if (allBalls.length == totalNum) {
+					allBalls.forEach(function (b) {
+						if (b.targetPoint === undefined) {
+							  b.targetPoint = randomizeBallTarget(allBalls.indexOf(b) % 3,
+								areaL, areC, areR); 
+						}
+						animateBallScaleAndMoveToTargetArea(b, b.targetPoint);
+					});
+					fcanvas.renderAll();
+				}
+				setTimeout(animate, 100);
+			};
 		};
 		
 		function animateBallScaleAndMoveToTargetArea(b, target) {

@@ -11,4 +11,5 @@ var Steps = {
   P10_STARTED: false,
   P11_STARTED: false,
   P12_STARTED: false
+  
 };
