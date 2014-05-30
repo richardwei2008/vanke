@@ -38,12 +38,8 @@
 			});
 		fcanvas.add(p1_header_instance);
 		var p1_header_move_to_left = (fcanvas.width - p1_header_instance.width) / 2;
-		p1_header_instance.animate('left', p1_header_move_to_left, {
-			onChange : fcanvas.renderAll.bind(fcanvas),
-			duration : easeDuration,
-			easing : fabric.util.ease.easeOutBounce
-		});
-
+		animateEase(p1_header_instance, p1_header_move_to_left, 'left', fabric.util.ease.easeOutBounce);
+		
 		var p1_footer_el = getId("p1-footer");
 		var p1_footer_left = p1_header_move_to_left;
 		var p1_footer_instance = new fabric.Image(p1_footer_el, {
@@ -52,11 +48,8 @@
 			});
 		fcanvas.add(p1_footer_instance);
 		var p1_footer_move_to_top = 750 * globalRatio;
-		p1_footer_instance.animate('top', p1_footer_move_to_top /* 750 */, {
-			onChange : fcanvas.renderAll.bind(fcanvas),
-			duration : easeDuration,
-			easing : fabric.util.ease.easeOutBounce
-		});
+	
+		animateEase(p1_footer_instance, p1_footer_move_to_top, 'top', fabric.util.ease.easeOutBounce);
 		// fadeOutAndRemove p1_header 
 		var p1_fadeOutTime = 3000;
 		setTimeout(animateFadeOutAndRemove(p1_header_instance, oInterval, frameFreshTime), p1_fadeOutTime);
@@ -97,7 +90,7 @@
 				top : 64 * globalRatio + p2_earth_el.height + 20
 			});
 		fcanvas.add(p2_shadow_instance);
-		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), p2_startTime);
+		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), p2_startTime + 500);
 		/**************** end p2 ****************/
 		
 		/*************** start p3 ***************/
@@ -108,7 +101,7 @@
 				top : 64 * globalRatio + p2_earth_el.height + 15 + p2_shadow_instance.height + 20
 			});
 		fcanvas.add(p3_footer_instance);
-		setTimeout(animateFadeInAndDisplay(p3_footer_instance, oInterval, frameFreshTime), p2_startTime);
+		setTimeout(animateFadeInAndDisplay(p3_footer_instance, oInterval, frameFreshTime), p2_startTime + 500);
 		// fade out earth and fade in balls
 		// fadeOutAndRemove p2_earth 
 		var earthFadeOutTime = p2_startTime + 2000;
@@ -228,11 +221,7 @@
 		var p5_body_move_to_left = p5_side_left + p5_side_el.width + 10 * globalRatio;
 		setTimeout(function () {			
 			fcanvas.add(p5_body_instance);
-			p5_body_instance.animate('left', p5_body_move_to_left /* 280 * globalRatio */, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p5_body_instance, p5_body_move_to_left, 'left', fabric.util.ease.easeOutCubic);
 		}, p5_renderingTime + 100);
 		// add footer
 		var p5_footer_el = getId("p5-footer");
@@ -245,11 +234,7 @@
 		var p5_footer_move_to_left = p5_side_left + p5_side_instance.width + 10 * globalRatio;
 		setTimeout(function () {
 			fcanvas.add(p5_footer_instance);
-			p5_footer_instance.animate('left', p5_footer_move_to_left, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p5_footer_instance, p5_footer_move_to_left, 'left', fabric.util.ease.easeOutCubic);
 		}, p5_renderingTime + 100);		
 		// fadeOut pyramid and remove 		
 		var p5_fadeOutTime = p5_startTime + 20000;
@@ -343,11 +328,7 @@
 		var p7_header2_move_to_left = p7_header_left + p7_header_el.width - p7_header2_el.width - 10 * globalRatio;
 		setTimeout(function () {			
 			fcanvas.add(p7_header2_instance);
-			p7_header2_instance.animate('left', p7_header2_move_to_left, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p7_header2_instance, p7_header2_move_to_left, 'left', fabric.util.ease.easeOutCubic);
 		}, p7_startTime + 10000 + 100);
 		// add footer  
 		var p7_footer_el = getId("p7-footer");
@@ -360,11 +341,7 @@
 		var p7_footer_move_to_left = p7_header_left + p7_header_el.width - p7_footer_el.width;
 		setTimeout(function () {			
 			fcanvas.add(p7_footer_instance);
-			p7_footer_instance.animate('left', p7_footer_move_to_left, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p7_footer_instance, p7_footer_move_to_left, 'left', fabric.util.ease.easeOutCubic);			
 		}, p7_startTime + 10000 + 100);
 		var p7_fadeOutTime = p7_startTime + 20000;
 		// fadeOut greatwall and remove 		
@@ -404,11 +381,7 @@
 		var p9_header_move_to_right = 40 * globalRatio;;
 		setTimeout(function () {			
 			fcanvas.add(p9_header_instance);
-			p9_header_instance.animate('left', p9_header_move_to_right, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p9_header_instance, p9_header_move_to_right, 'left', fabric.util.ease.easeOutCubic);
 		}, p9_startTime + 10000 + 100);
 		
 		// add operahouse		
@@ -477,11 +450,7 @@
 		var p9_footer2_move_to_right = p9_footer_left;
 		setTimeout(function () {			
 			fcanvas.add(p9_footer2_instance);
-			p9_footer2_instance.animate('left', p9_footer2_move_to_right, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p9_footer2_instance, p9_footer2_move_to_right, 'left', fabric.util.ease.easeOutCubic);
 		}, p9_startTime + 10000 + 100);
 		var p9_fadeOutTime = p9_startTime + 20000;
 		// fadeOut greatwall and remove 	
@@ -538,11 +507,7 @@
 		var p11_header_move_to_right = p11_side_left - p11_header_el.width - 20 * globalRatio;
 		setTimeout(function () {			
 			fcanvas.add(p11_header_instance);
-			p11_header_instance.animate('left', p11_header_move_to_right, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p11_header_instance, p11_header_move_to_right, 'left', fabric.util.ease.easeOutCubic);
 		}, p11_startTime + 10000 + 100);
 		
 		// add pearltower		
@@ -589,11 +554,7 @@
 		var p11_header2_move_to_right = p11_side_left - p11_header2_el.width - 20 * globalRatio;
 		setTimeout(function () {			
 			fcanvas.add(p11_header2_instance);
-			p11_header2_instance.animate('left', p11_header2_move_to_right, {
-				onChange : fcanvas.renderAll.bind(fcanvas),
-				duration : easeDuration,
-				easing : fabric.util.ease.easeOutCubic
-			});
+			animateEase(p11_header2_instance, p11_header2_move_to_right, 'left', fabric.util.ease.easeOutCubic);
 		}, p11_startTime + 10000 + 100);
 		var p11_fadeOutTime = p11_startTime + 20000;
 		// fadeOut pearl tower and remove 		
@@ -636,6 +597,14 @@
 		function getId(id) {
 			return document.getElementById(id);
 		};	
+		
+		function animateEase(textInstance, moveTo, direction, easingType) {
+			textInstance.animate(direction, moveTo, {
+				onChange : fcanvas.renderAll.bind(fcanvas),
+				duration : easeDuration,
+				easing : easingType
+			});
+		};
 		
 		function animateFadeOutAndRemove(instance, oInterval, frameFreshInterval) {
 			return function animate() {
