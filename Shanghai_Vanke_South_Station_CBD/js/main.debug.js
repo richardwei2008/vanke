@@ -653,6 +653,7 @@
 				while (allBalls.length != limit) {
 					addBallRandomly(0, topFrameFrom, topFrameTo); // opacity
 				}
+				fcanvas.renderAll();
 			}
 		};
 		
@@ -882,7 +883,6 @@
 			array.push(theBall);
 			globalArray.push(theBall);
 			fcanvas.add(theBall);
-			fcanvas.renderAll();
 			// console.log("ColorType: " + colorType + " Style: " + style + " Size:"+ array.length);
 			return theBall;
 		};
