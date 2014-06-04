@@ -90,7 +90,7 @@
 				top : 64 * globalRatio + p2_earth_el.height + 20
 			});
 		fcanvas.add(p2_shadow_instance);
-		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), p2_startTime + 500);
+		setTimeout(animateFadeInAndDisplay(p2_shadow_instance, oInterval, frameFreshTime), p2_startTime);
 		/**************** end p2 ****************/
 		
 		/*************** start p3 ***************/
